@@ -27,7 +27,8 @@ struct TransformComponent{
  */
 struct TextureComponent {
 	Texture2D texture;
-	int drawRectY;
+	RenderLayer targetLayer;
+	int yStart;
+	int xStart, xEnd;
 	int currentFrame;
-	int maxFrame;
 };

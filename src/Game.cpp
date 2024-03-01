@@ -30,10 +30,15 @@ void Game::render() {
 	BeginDrawing();
 	ClearBackground(BLACK);
 	//TODO: Draw
-	for (auto [entity, transform, texture] : renderObjects.each()) {
-		Rectangle frameRec = { texture.currentFrame++ * TILE_SIZE, texture.drawRectY, TILE_SIZE, TILE_SIZE };
-		if (texture.currentFrame > texture.maxFrame) texture.currentFrame = 0;
-		DrawTextureRec(texture.texture, frameRec, transform.position, WHITE);
+
+	for (int currLayer = 0; currLayer < RenderLayer::ENUM_END; currLayer++) {
+		for (auto [entity, transform, texture] : renderObjects.each()) {
+			if (currLayer != texture.targetLayer) continue;
+			
+			Rectangle frameRec = { texture.currentFrame++ * TILE_SIZE, texture.yStart, TILE_SIZE, TILE_SIZE };
+			if (texture.currentFrame > texture.xEnd) texture.currentFrame = texture.xStart;
+			DrawTextureRec(texture.texture, frameRec, transform.position, WHITE);
+		}
 	}
 
 	EndDrawing();
