@@ -19,10 +19,11 @@ void Player::Update(entt::registry& registry)
 {
 	auto playerView = registry.view< TransformComponent, Status>();
 	for (auto [player, transform, status] : playerView.each()) {
-		if (status.HP-- <= 0) {
+		if (status.HP <= 0) {
 			registry.destroy(player);
 		}
-		transform.position.x++;
+
+		//TODO: Add player's update
 	}
 }
 
@@ -30,6 +31,7 @@ void Player::HandleInput(entt::registry& registry)
 {
 	auto playerView = registry.view< TransformComponent, Status>();
 	for (auto [player, transform, status] : playerView.each()) {
+		//TODO: Add player input
 		
 	}
 }
