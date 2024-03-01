@@ -13,16 +13,24 @@ Game::~Game() {
 	CloseWindow();
 }
 void Game::handleEvents() {
+	if (IsKeyPressed(KEY_C)) {
+		Player::Create(registry, "a", "resource/Player.png");
+	}
 }
 void Game::update() {
 	Player::Update(registry);
 }
 
 void Game::render() {
+	auto renderObjects = registry.view<TransformComponent, TextureComponent>();
+
 	BeginDrawing();
+	ClearBackground(BLACK);
 	//TODO: Draw
-	DrawRectangle(0, 0, 128, 128, BLUE);
-	DrawRectangle(128, 0, 256, 256, RED);
-	DrawRectangle(128 + 256, 0, 64, 64, GREEN);
+	for (auto [entity, transform, texture] : renderObjects.each()) {
+		Rectangle frameRec = { texture.currentFrame * TILE_SIZE, texture.drawRectY, TILE_SIZE, TILE_SIZE };
+		DrawTextureRec(texture.texture, frameRec, transform.position, WHITE);
+	}
+
 	EndDrawing();
 }
