@@ -1,5 +1,7 @@
 #pragma once
 
+#define FPS 60
+
 #include <entt\entt.hpp>
 
 class Game {
@@ -13,7 +15,7 @@ public:
 
 private:
 	
-	entt::registry mRegistry;
+	entt::registry registry;
 
 
 };
