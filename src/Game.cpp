@@ -9,9 +9,12 @@ Game::Game(const char* title, int width, int height) {
 	InitWindow(width, height, title);
 	SetTargetFPS(FPS);
 }
+
 Game::~Game() {
 	CloseWindow();
 }
+
+
 void Game::handleEvents() {
 	if (IsKeyPressed(KEY_C)) {
 		Player::Create(registry, "a", "resource/Player.png");
@@ -28,7 +31,8 @@ void Game::render() {
 	ClearBackground(BLACK);
 	//TODO: Draw
 	for (auto [entity, transform, texture] : renderObjects.each()) {
-		Rectangle frameRec = { texture.currentFrame * TILE_SIZE, texture.drawRectY, TILE_SIZE, TILE_SIZE };
+		Rectangle frameRec = { texture.currentFrame++ * TILE_SIZE, texture.drawRectY, TILE_SIZE, TILE_SIZE };
+		if (texture.currentFrame > texture.maxFrame) texture.currentFrame = 0;
 		DrawTextureRec(texture.texture, frameRec, transform.position, WHITE);
 	}
 

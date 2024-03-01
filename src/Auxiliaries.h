@@ -29,4 +29,5 @@ struct TextureComponent {
 	Texture2D texture;
 	int drawRectY;
 	int currentFrame;
+	int maxFrame;
 };
