@@ -1,5 +1,8 @@
 #pragma once
 #include <entt\entt.hpp>
+#include <raylib.h>
+#include <raymath.h>
+#include "Auxiliaries.h"
 
 struct Player {
 	/**
@@ -9,6 +12,7 @@ struct Player {
 	struct Status {
 		const std::string name;
 		int HP;
+		Direction movingDirection;
 	};
 
 	/**
@@ -33,4 +37,7 @@ struct Player {
 	 * @brief Update
 	 */
 	static void Update(entt::registry& registry);
+
+private:
+	static void ClampMovementInTile(Vector2& transform, Vector2& movingDirection);
 };

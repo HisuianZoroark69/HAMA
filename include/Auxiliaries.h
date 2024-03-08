@@ -2,19 +2,22 @@
 
 #include "Game.h"
 #include <raylib.h>
+#include <string>
 
 /**
-* MOVE_SPEED = FPS / Tiles_per_second
+* MOVE_SPEED = Tiles_per_second
 */
-#define MOVE_SPEED FPS/2
+#define MOVE_SPEED 3.f
 #define TILE_SIZE 64
 
 using Frame = Rectangle;
 
 /**
- * @brief Directions
+ * @brief Direction -> vector2
+ * x: negative for left, positive for right, 0 for neutral
+ * y: negative for down, positive for up, 0 for neutral
  */
-enum Direction {Right, FrontRight, Front, FrontLeft, Left, BackLeft, Back, BackRight};
+using Direction = Vector2;
 
 /**
  * @brief The transform component
@@ -35,3 +38,4 @@ struct TextureComponent {
 };
 
 void generateFrames(std::vector<Frame>& frames, float y, float xStart, float xEnd);
+int getSign(float num);

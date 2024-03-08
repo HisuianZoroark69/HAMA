@@ -16,6 +16,8 @@ Game::~Game() {
 
 
 void Game::handleEvents() {
+	Player::HandleInput(registry);
+
 	if (IsKeyPressed(KEY_C)) {
 		Player::Create(registry, "a", "resource/Player.png");
 	}
