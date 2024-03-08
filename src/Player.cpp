@@ -6,7 +6,11 @@ entt::entity Player::Create(entt::registry& registry, const std::string name, co
 	entt::entity entity = registry.create();
 	registry.emplace<Player::Status>(entity, name, 100);
 	registry.emplace<TransformComponent>(entity, Vector2{ 0,0 }, Direction::Right);
-	registry.emplace<TextureComponent>(entity, LoadTexture(textureFile), RenderLayer::Player, 0, 0, 3, 0);
+
+	std::vector<Frame> playerTexture;
+	generateFrames(playerTexture, 0, 0, 2 * TILE_SIZE);
+
+	registry.emplace<TextureComponent>(entity, LoadTexture(textureFile), RenderLayer::Player, playerTexture);
 	return entity;
 }
 
