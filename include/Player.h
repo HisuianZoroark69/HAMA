@@ -1,7 +1,9 @@
 #pragma once
-#include <entt\entt.hpp>
+
 #include <raylib.h>
 #include <raymath.h>
+#include <entt\entt.hpp>
+
 #include "Auxiliaries.h"
 
 struct Player {

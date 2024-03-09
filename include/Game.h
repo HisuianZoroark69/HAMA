@@ -1,15 +1,11 @@
 #pragma once
 
-#define FPS 60
-
 #include <entt\entt.hpp>
-#include <raylib.h>
 
-/**
- * @brief Render layer enum
- * @var RenderLayers::ENUM_END Used to get the layer size for rendering
- */
-enum RenderLayer { Background, Player, GUI, ENUM_END };
+#include "Auxiliaries.h"
+#include "TextureLoader.h"
+
+#define FPS 60
 
 class Game {
 public:

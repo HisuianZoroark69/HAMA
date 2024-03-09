@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "textures": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of the texture, double as ID"
+            },
+            "file": {
+              "type": "string",
+              "description": "Path to image file"
+            },
+            "layer": {
+              "type": "string",
+              "description": "Layer to render to"
+            },
+            "frames": {
+              "type": "array",
+              "description": "The frame rectangle in the texture for animations",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "integer"
+                    },
+                    "y": {
+                      "type": "integer"
+                    },
+                    "width": {
+                      "type": "integer"
+                    },
+                    "height": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y",
+                    "width",
+                    "height"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "name",
+            "file",
+            "layer",
+            "frames"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "textures"
+  ]
+}
+
+

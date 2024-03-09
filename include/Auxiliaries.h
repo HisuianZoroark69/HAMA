@@ -1,9 +1,20 @@
 #pragma once
 
-#include "Game.h"
 #include <raylib.h>
 #include <string>
+#include <vector>
+#include <nlohmann\json.hpp>
 
+/**
+ * @brief Render layer enum
+ * @var RenderLayers::ENUM_END Used to get the layer size for rendering
+ */
+enum RenderLayer { Background, Player, GUI, ENUM_END };
+NLOHMANN_JSON_SERIALIZE_ENUM(RenderLayer, {
+	{Background, "Background"},
+	{Player, "Player"},
+	{GUI, "GUI"},
+})
 /**
 * MOVE_SPEED = Tiles_per_second
 */

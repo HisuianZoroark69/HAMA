@@ -27,10 +27,19 @@
     <ClCompile Include="src\Auxiliaries.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TextureLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="vcpkg-configuration.json" />
+    <None Include="resource\schema.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\textures.json">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Game.h">
@@ -42,5 +51,13 @@
     <ClInclude Include="include\Auxiliaries.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\TextureLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resource\Player.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

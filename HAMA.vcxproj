@@ -149,8 +149,11 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\HAMA.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resource\schema.json" />
+    <None Include="resource\textures.json" />
     <None Include="vcpkg-configuration.json" />
     <None Include="vcpkg.json" />
   </ItemGroup>
@@ -158,6 +161,10 @@
     <ClInclude Include="include\Auxiliaries.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Player.h" />
+    <ClInclude Include="include\TextureLoader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resource\Player.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

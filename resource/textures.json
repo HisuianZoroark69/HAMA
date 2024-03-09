@@ -1,0 +1,66 @@
+{
+  "$schema": "./schema.json",
+  "textures": [
+    {
+      "name": "Player_Idle",
+      "file": "resource/Player.png",
+      "layer": "Player",
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 64,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 64,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 64,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        }
+      ]
+    }
+  ]
+}

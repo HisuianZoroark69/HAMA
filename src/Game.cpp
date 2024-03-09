@@ -1,16 +1,22 @@
-#include "Game.h"
-#include "Player.h"
-#include "Auxiliaries.h"
 #include <raylib.h>
+#include <nlohmann\json.hpp>
+#include <entt\entt.hpp>
 
-#include <iostream>
+#include "Auxiliaries.h"
+#include "TextureLoader.h"
+#include "Player.h"
+
+#include "Game.h"
+
 
 Game::Game(const char* title, int width, int height) {
 	InitWindow(width, height, title);
 	SetTargetFPS(FPS);
+	TextureLoader::LoadTextureFromJson("resource/textures.json");
 }
 
 Game::~Game() {
+	TextureLoader::DeleteTextures();
 	CloseWindow();
 }
 
