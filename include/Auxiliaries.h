@@ -18,7 +18,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(RenderLayer, {
 /**
 * MOVE_SPEED = Tiles_per_second
 */
-#define MOVE_SPEED 3.f
+#define MOVE_SPEED 4.f
 #define TILE_SIZE 64
 
 /**
@@ -40,6 +40,7 @@ struct TransformComponent{
  * @brief The texture component
  */
 struct TextureComponent {
+	std::string name;
 	Texture2D texture; //The texture sheet
 	RenderLayer targetLayer; //The layer to render to
 	std::vector<Rectangle> frames;

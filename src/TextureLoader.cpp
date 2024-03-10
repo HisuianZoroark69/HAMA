@@ -22,8 +22,8 @@ void TextureLoader::LoadTextureFromJson(const std::string jsonFile)
 			baseTextures[textureData.file] = LoadTexture(textureData.file.c_str());
 		}
 
-		textures[textureData.name] = { baseTextures[textureData.file], textureData.layer};
-		for (auto frame : textureData.frames) {
+		textures[textureData.name] = {textureData.name, baseTextures[textureData.file], textureData.layer};
+		for (const auto& frame : textureData.frames) {
 			for (int i = 0; i < frame.duration; i++) {
 				textures[textureData.name].frames.push_back(frame.rect);
 			}
@@ -43,10 +43,8 @@ void TextureLoader::DeleteTextures()
 	}
 }
 
-TextureComponent TextureLoader::GetTexture(std::string name)
-{
+TextureComponent TextureLoader::GetTexture(std::string name) {
 	return textures[name];
 }
-
 
 

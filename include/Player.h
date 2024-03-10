@@ -13,9 +13,10 @@ struct Player {
 	*/
 	struct Status {
 		const std::string name;
-		int HP;
-		Direction movingDirection;
+		int HP = 0;
+		Direction movingDirection = { 0,0 };
 	};
+
 
 	/**
 	 * @brief Create a player
@@ -41,5 +42,9 @@ struct Player {
 	static void Update(entt::registry& registry);
 
 private:
+	inline static const std::string TEXTURE_IDLE = "Player_Idle";
+	inline static const std::string TEXTURE_RUNNING = "Player_Running";
+
 	static void ClampMovementInTile(Vector2& transform, Vector2& movingDirection);
+	static void ChangeTexture(TextureComponent& oldTexture, TextureComponent newTexture);
 };

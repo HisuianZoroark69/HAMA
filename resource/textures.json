@@ -8,8 +8,7 @@
       "frames": [
         {
           "duration": 20,
-          "rect":
-          {
+          "rect": {
             "x": 0,
             "y": 0,
             "width": 64,
@@ -30,6 +29,40 @@
           "rect": {
             "x": 128,
             "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player_Running",
+      "file": "resource/Player.png",
+      "layer": "Player",
+      "frames": [
+        {
+          "duration": 5,
+          "rect": {
+            "x": 0,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          }
+        },
+        {
+          "duration": 5,
+          "rect": {
+            "x": 64,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          }
+        },
+        {
+          "duration": 5,
+          "rect": {
+            "x": 128,
+            "y": 64,
             "width": 64,
             "height": 64
           }
