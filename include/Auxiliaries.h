@@ -21,8 +21,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(RenderLayer, {
 #define MOVE_SPEED 3.f
 #define TILE_SIZE 64
 
-using Frame = Rectangle;
-
 /**
  * @brief Direction -> vector2
  * x: negative for left, positive for right, 0 for neutral
@@ -48,5 +46,4 @@ struct TextureComponent {
 	int currentFrame = 0;
 };
 
-void generateFrames(std::vector<Frame>& frames, float y, float xStart, float xEnd);
 int getSign(float num);

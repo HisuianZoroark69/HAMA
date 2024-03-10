@@ -7,58 +7,32 @@
       "layer": "Player",
       "frames": [
         {
-          "x": 0,
-          "y": 0,
-          "width": 64,
-          "height": 64
+          "duration": 20,
+          "rect":
+          {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
         },
         {
-          "x": 0,
-          "y": 0,
-          "width": 64,
-          "height": 64
+          "duration": 20,
+          "rect": {
+            "x": 64,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
         },
         {
-          "x": 0,
-          "y": 0,
-          "width": 64,
-          "height": 64
-        },
-        {
-          "x": 64,
-          "y": 0,
-          "width": 64,
-          "height": 64
-        },
-        {
-          "x": 64,
-          "y": 0,
-          "width": 64,
-          "height": 64
-        },
-        {
-          "x": 64,
-          "y": 0,
-          "width": 64,
-          "height": 64
-        },
-        {
-          "x": 128,
-          "y": 0,
-          "width": 64,
-          "height": 64
-        },
-        {
-          "x": 128,
-          "y": 0,
-          "width": 64,
-          "height": 64
-        },
-        {
-          "x": 128,
-          "y": 0,
-          "width": 64,
-          "height": 64
+          "duration": 20,
+          "rect": {
+            "x": 128,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
         }
       ]
     }

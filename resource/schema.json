@@ -27,25 +27,35 @@
                 {
                   "type": "object",
                   "properties": {
-                    "x": {
-                      "type": "integer"
+                    "duration": {
+                      "type": "integer",
+                      "minimum": 1
                     },
-                    "y": {
-                      "type": "integer"
-                    },
-                    "width": {
-                      "type": "integer"
-                    },
-                    "height": {
-                      "type": "integer"
+                    "rect": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "integer"
+                        },
+                        "y": {
+                          "type": "integer"
+                        },
+                        "width": {
+                          "type": "integer"
+                        },
+                        "height": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "width",
+                        "height"
+                      ]
                     }
                   },
-                  "required": [
-                    "x",
-                    "y",
-                    "width",
-                    "height"
-                  ]
+                  "required": ["rect"]
                 }
               ]
             }

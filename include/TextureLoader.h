@@ -3,11 +3,16 @@
 #include "Auxiliaries.h"
 #include <unordered_map>
 
+struct Frame {
+	Rectangle rect;
+	int duration = 1;
+};
+
 struct TextureJsonData {
 	std::string name;
 	std::string file;
 	RenderLayer layer = ENUM_END;
-	std::vector<Rectangle> frames;
+	std::vector<Frame> frames;
 };
 
 class TextureLoader {
