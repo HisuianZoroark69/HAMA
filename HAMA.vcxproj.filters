@@ -30,6 +30,15 @@
     <ClCompile Include="src\TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\DungeonGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\PCG\pcg_random.hpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\PCG\pcg_extras.hpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
@@ -52,6 +61,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TextureLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DungeonGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PCG\pcg_uint128.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

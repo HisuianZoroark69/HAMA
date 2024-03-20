@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -145,7 +145,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\PCG\pcg_extras.hpp" />
+    <ClCompile Include="include\PCG\pcg_random.hpp" />
     <ClCompile Include="src\Auxiliaries.cpp" />
+    <ClCompile Include="src\DungeonGenerator.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\HAMA.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -159,7 +162,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Auxiliaries.h" />
+    <ClInclude Include="include\DungeonGenerator.h" />
     <ClInclude Include="include\Game.h" />
+    <ClInclude Include="include\PCG\pcg_uint128.hpp" />
     <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\TextureLoader.h" />
   </ItemGroup>
