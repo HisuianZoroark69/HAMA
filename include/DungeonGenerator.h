@@ -10,9 +10,7 @@ struct DungeonGenerateData {
 	int width;
 	int height;
 
-	int roomAmount;
-	int roomMaxWidth;
-	int roomMaxHeight;
+	int roomAmount = 0;
 };
 
 /**
@@ -22,7 +20,7 @@ struct DungeonGenerateData {
  */
 class DungeonGenerator {
 public:
-	std::vector<std::vector<int>> Generate(DungeonGenerateData data);
+	std::vector<std::vector<int>> Generate(const DungeonGenerateData& data);
 private:
 
 	struct Room {
@@ -30,6 +28,9 @@ private:
 		int width, height;
 	};
 
-	static int GetRandomNumber(pcg32& rng, int min, int max);
+	static int GetRandomNumber(pcg32& rng, int min, int max, bool normal = false);
+	static int GetRandomOddNumber(pcg32& rng, int min, int max, bool normal = false);
+	static int GetRandomEvenNumber(pcg32& rng, int min, int max, bool normal = false);
 	static void SplitRoom(pcg32& rng, std::vector<Room>& rooms, int& roomLeft);
+	static void CreateRoom(pcg32& rng, std::vector<Room>& rooms, int roomWidth, int roomHeight);
 };
