@@ -36,3 +36,7 @@ vcpkg_installed/
 x64/
 
 .vs/
+
+HAMA.vcxproj.filters
+
+HAMA.vcxproj.user

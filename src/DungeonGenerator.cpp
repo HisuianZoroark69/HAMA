@@ -1,7 +1,22 @@
 #include "DungeonGenerator.h"
 
 #include <random>
+#include <stack>
 #define ROOM_SPLIT_DEVIATION 3
+
+enum CELL {C_EMPTY, C_WALL, C_ROOM, C_CORR};
+
+void printDungeon(const std::vector<std::vector<int>>& dungeon){
+    for (int i = 0; i < dungeon.size(); i++) {
+        for (int j = 0; j < dungeon[i].size(); j++) {
+            if (dungeon[i][j] == C_EMPTY || dungeon[i][j] == C_WALL)
+                std::cout << "  ";
+            else std::cout << dungeon[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 /**
  * @brief Generate a random number in range
  * @param rng 
@@ -31,11 +46,11 @@ int DungeonGenerator::GetRandomEvenNumber(pcg32& rng, int min, int max, bool nor
     return GetRandomNumber(rng, min / 2, max / 2, normal) * 2;
 }
 
-void DungeonGenerator::SplitRoom(pcg32& rng, std::vector<Room>& rooms, int& roomLeft) {
+void DungeonGenerator::SplitRoom(pcg32& rng, std::vector<Room>& rooms, int& roomLeft, int roomMinWidth, int roomMinHeight) {
     std::vector<Room> result;
     while (!rooms.empty() && --roomLeft > 0) {
         Room currRoom = rooms.back();
-        bool isVertical = rng(2);
+        bool isVertical = rng() % 2;
         
         //Split room into 2 parts
         if (isVertical) {
@@ -59,7 +74,7 @@ void DungeonGenerator::SplitRoom(pcg32& rng, std::vector<Room>& rooms, int& room
     //Filter rooms
     while (!result.empty()) {
         Room currRoom = result.back();  result.pop_back();
-        if ((int)currRoom.width < 5 || (int)currRoom.height < 5) {
+        if (currRoom.width <= roomMinWidth || currRoom.height <= roomMinHeight) {
             continue;
         }
         rooms.push_back(currRoom);      
@@ -70,10 +85,81 @@ void DungeonGenerator::CreateRoom(pcg32& rng, std::vector<Room>& rooms, int room
     for (int i = 0; i < rooms.size(); i++) {
         Room room = rooms[i];
 
-        rooms[i].x = GetRandomOddNumber(rng, room.x + 1, (room.x + room.width - 6), true);
-        rooms[i].y = GetRandomOddNumber(rng, room.y + 1, (room.y + room.height - 6), true);
-        rooms[i].width = GetRandomOddNumber(rng, 3, room.width + room.x - rooms[i].x - 1);
-        rooms[i].height = GetRandomOddNumber(rng, 3, room.height + room.y - rooms[i].y - 1);
+        rooms[i].x = GetRandomOddNumber(rng, room.x + 1, (room.x + room.width - 2 - roomWidth), true);
+        rooms[i].y = GetRandomOddNumber(rng, room.y + 1, (room.y + room.height - 2 - roomHeight), true);
+        rooms[i].width = GetRandomOddNumber(rng, roomWidth, room.width + room.x - rooms[i].x - 1);
+        rooms[i].height = GetRandomOddNumber(rng, roomHeight, room.height + room.y - rooms[i].y - 1);
+    }
+}
+
+bool DungeonGenerator::CheckNotInBoundary(int x, int y, int width, int height) {
+    return x < 1 || x > width - 2 || y < 1 || y > height - 2;
+}
+
+bool DungeonGenerator::CheckCorridorsDone(const std::vector<std::vector<int>>& dungeon) {
+    for (int y = 1; y < dungeon.size(); y += 2) {
+        for (int x = 1; x < dungeon[y].size(); x += 2) {
+            if (dungeon[y][x] == C_EMPTY)
+                return false;
+        }
+    }
+    return true;
+}
+
+void DungeonGenerator::GenerateCorridors(std::vector<std::vector<int>>& dungeon, pcg32& rng, int startX, int startY) {
+    const int width = dungeon[0].size();
+    const int height = dungeon.size();
+
+    std::stack<std::pair<int, int>> stack;
+    stack.push({ startX, startY });
+
+    while (!stack.empty()) {
+        int x = stack.top().first;
+        int y = stack.top().second;
+        stack.pop();
+
+        // Check if the current position is out of bounds or already visited
+        if (CheckNotInBoundary(x, y, width, height) || dungeon[y][x] != C_EMPTY) {
+            continue;
+        }
+
+        // Mark the current position as part of the corridor
+        dungeon[y][x] = C_CORR;
+
+        std::vector<std::pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+
+        // Push all directions onto the stack in odd columns or rows
+        if (x % 2 == 1 && y % 2 == 1) {
+            std::shuffle(directions.begin(), directions.end(), rng);
+            for (const auto& dir : directions) {
+                int nx = x + dir.first;
+                int ny = y + dir.second;
+
+                stack.push({ nx, ny });
+            }
+        }
+        else {
+            // Continue in the same direction in even columns or rows
+            int count = 0;
+            std::pair<int, int> currDir;
+            for (const auto& dir : directions) {
+                int nx = x + dir.first;
+                int ny = y + dir.second;
+                if (dungeon[ny][nx] == C_CORR) {
+                    count++;
+                    currDir = { x - dir.first, y - dir.second };
+                }
+                else if (dungeon[ny][nx] == C_ROOM) {
+                    count++;
+                }            
+            }
+            if (count > 1) {
+                dungeon[y][x] = C_WALL;
+            }
+            else {
+                stack.push(currDir);
+            }
+        }
     }
 }
 
@@ -82,6 +168,7 @@ std::vector<std::vector<int>> DungeonGenerator::Generate(const DungeonGenerateDa
     //# Variables
     pcg32 rng(std::hash<std::string>{}(data.seed));
     std::vector<Room> rooms;
+    std::vector<std::vector<int>> dungeon(data.height, std::vector<int>(data.width, C_EMPTY));
 
     //# Generate rooms using bsd
     //## Initialize room
@@ -89,15 +176,37 @@ std::vector<std::vector<int>> DungeonGenerator::Generate(const DungeonGenerateDa
     rooms.push_back(baseRec);
     int roomLeft = data.roomAmount;
     while (roomLeft > 0)
-        SplitRoom(rng, rooms, roomLeft);
-    CreateRoom(rng, rooms, data.width, data.height);
+        SplitRoom(rng, rooms, roomLeft, data.roomMinWidth, data.roomMinHeight);
+    CreateRoom(rng, rooms, data.roomMinWidth, data.roomMinHeight);
 
+    for (const Room& room : rooms) {
+        for (int y = room.y; y < room.y + room.height; y++) {
+            for (int x = room.x; x < room.x + room.width; x++) {
+                dungeon[y][x] = C_ROOM; // Mark the entire room as part of the dungeon
+            }
+        }
+    }
+
+    //Generate border walls
+    dungeon[0] = dungeon[data.height - 1] = std::vector<int>(data.width, C_WALL);
+    for (int x = 1; x < data.height - 1; x++)
+        dungeon[x][0] = dungeon[x][data.width - 1] = C_WALL;
 
     //# Generate corridors
+    while (!CheckCorridorsDone(dungeon)) {
+        int start_x = GetRandomOddNumber(rng, 1, data.width - 2);
+        int start_y = GetRandomOddNumber(rng, 1, data.height - 2);
+        while (dungeon[start_y][start_x] == 1) {
+            start_x = GetRandomOddNumber(rng, 1, data.width - 2);
+            start_y = GetRandomOddNumber(rng, 1, data.height - 2);
+        }
+        GenerateCorridors(dungeon, rng, start_x, start_y);
+    }
 
     
     //# Generate doorways
 
+    printDungeon(dungeon);
 
-    return std::vector<std::vector<int>>();
+    return dungeon;
 }

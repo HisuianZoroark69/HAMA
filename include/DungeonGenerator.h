@@ -11,6 +11,9 @@ struct DungeonGenerateData {
 	int height;
 
 	int roomAmount = 0;
+
+	int roomMinWidth = 3;
+	int roomMinHeight = 3;
 };
 
 /**
@@ -31,6 +34,16 @@ private:
 	static int GetRandomNumber(pcg32& rng, int min, int max, bool normal = false);
 	static int GetRandomOddNumber(pcg32& rng, int min, int max, bool normal = false);
 	static int GetRandomEvenNumber(pcg32& rng, int min, int max, bool normal = false);
-	static void SplitRoom(pcg32& rng, std::vector<Room>& rooms, int& roomLeft);
-	static void CreateRoom(pcg32& rng, std::vector<Room>& rooms, int roomWidth, int roomHeight);
+	static void SplitRoom(pcg32& rng, std::vector<Room>& rooms, int& roomLeft, int roomMinWidth, int roomMinHeight);
+	static void CreateRoom(pcg32& rng, std::vector<Room>& rooms, int roomMinWidth, int roomMinHeight);
+	static bool CheckNotInBoundary(int x, int y, int width, int height);
+	static bool CheckCorridorsDone(const std::vector<std::vector<int>>& dungeon);
+	/**
+	 * @brief Generate corridors at odd row and columns using stack dfs algorithm
+	 * @param dungeon The dungeon grid
+	 * @param rng Random number generator
+	 * @param x Current x-coordinate
+	 * @param y Current y-coordinate
+	 */
+	static void GenerateCorridors(std::vector<std::vector<int>>& dungeon, pcg32& rng, int x, int y);
 };
