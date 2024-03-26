@@ -4,9 +4,15 @@
 #include <string>
 #include <PCG\pcg_random.hpp>
 
-typedef std::vector<std::vector<int>> DungeonGrid;
+using DungeonGrid = std::vector<std::vector<int>>;
 
-const enum CELL { C_EMPTY, C_WALL, C_ROOM, C_CORR };
+const enum CELL { 
+	C_EMPTY, 
+	C_WALL, 
+	C_ROOM, 
+	C_CORR, 
+	C_DOOR 
+};
 
 struct DungeonGenerateData {
 	std::string seed;
@@ -109,7 +115,7 @@ private:
 	 * @param height Dungeon's height
 	 * @return true if position is not in boundary
 	 */
-	bool CheckInBoundary(int x, int y, int width, int height);
+	bool CheckInBoundary(int x, int y, uint64_t width, uint64_t height);
 
 	/**
 	 * @brief Check if the dungeon is filled with corridors
@@ -136,4 +142,20 @@ private:
 	 * @param y Current y-coordinate
 	 */
 	void GenerateCorridors(DungeonGrid& dungeon, pcg32& rng, int x, int y);
+
+	/**
+	 * @brief Fill the empty cells in the dungeon with walls
+	 * @param dungeon The dungeon grid
+	 */
+	void FillDungeon(DungeonGrid& dungeon);
+
+	/**
+	 * @brief Generate doorways
+	 * @param rng Random number generator
+	 * @param dungeon The dungeon grid
+	 * @param rooms List of rooms
+	 */
+	void GenerateDoorways(pcg32& rng, DungeonGrid& dungeon, const std::vector<Room>& rooms);
+
+
 };
