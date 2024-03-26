@@ -68,6 +68,51 @@
           }
         }
       ]
+    },
+    {
+      "name": "Dungeon_Wall",
+      "file": "resource/Dungeon.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dungeon_Room",
+      "file": "resource/Dungeon.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 64,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dungeon_Corr",
+      "file": "resource/Dungeon.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 128,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
     }
   ]
 }

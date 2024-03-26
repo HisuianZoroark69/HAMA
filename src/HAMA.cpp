@@ -7,7 +7,7 @@
 
 int main()
 {
-    Game game("Haki and Miyeon adventure", 600, 600);
+    Game game("Haki and Miyeon adventure", 640, 640);
     while (!WindowShouldClose()) {
         game.handleEvents();
         game.update();

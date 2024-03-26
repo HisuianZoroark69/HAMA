@@ -1,4 +1,5 @@
 #include "DungeonGenerator.h"
+#include "Auxiliaries.h"
 
 #include <random>
 #include <stack>
@@ -15,29 +16,6 @@ void printDungeon(const DungeonGrid& dungeon){
         }
         std::cout << std::endl;
     }
-}
-
-int DungeonGenerator::GetRandomNumber(pcg32& rng, int min, int max, bool normal) {
-    if (max == min) return min;
-
-    if(!normal)
-        return min + rng(max - min + 1);
-
-    int mean = (max + min) / 2;
-    std::normal_distribution<double> dist(mean, sqrt(max - mean));
-    int rand = static_cast<int>(dist(rng));
-
-    if (rand >= max) rand = max;
-    else if (rand <= min) rand = min;
-    return rand;
-}
-
-int DungeonGenerator::GetRandomOddNumber(pcg32& rng, int min, int max, bool normal) {
-    return GetRandomNumber(rng, min / 2, max / 2, normal) * 2 + 1;
-}
-
-int DungeonGenerator::GetRandomEvenNumber(pcg32& rng, int min, int max, bool normal) {
-    return GetRandomNumber(rng, min / 2, max / 2, normal) * 2;
 }
 
 void DungeonGenerator::MarkBorder(DungeonGrid& dungeon) {
@@ -289,8 +267,6 @@ DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data)
     //# Generate doorways
 
     GenerateDoorways(rng, dungeon, rooms);
-
-    printDungeon(dungeon);
 
     return dungeon;
 }

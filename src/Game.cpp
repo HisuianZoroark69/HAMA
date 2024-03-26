@@ -5,6 +5,7 @@
 #include "Auxiliaries.h"
 #include "TextureLoader.h"
 #include "Player.h"
+#include "DungeonGenerator.h"
 
 #include "Game.h"
 
@@ -25,7 +26,9 @@ void Game::handleEvents() {
 	Player::HandleInput(registry);
 
 	if (IsKeyPressed(KEY_C)) {
-		Player::Create(registry, "a", "resource/Player.png");
+		//Player::Create(registry, "a", "resource/Player.png");
+		ClearDungeon();
+		CreateDungeon("Lmao", 1);
 	}
 }
 void Game::update() {
@@ -48,4 +51,45 @@ void Game::render() {
 	}
 
 	EndDrawing();
+}
+
+void Game::CreateDungeon(const std::string seed, int difficulty) {
+	pcg32 rng(GetRandomSeed());
+	DungeonGenerateData data = {
+		.seed = seed,
+		.width = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (difficulty + 1), true),
+		.height = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (difficulty + 1), true),
+		.roomAmount = MINIMUM_ROOM_AMOUNT * difficulty
+	};
+
+	DungeonGenerator dg;
+	DungeonGrid dungeonGrid = dg.Generate(data);
+
+	for (float y = 0; y < dungeonGrid.size(); y++) {
+		for (float x = 0; x < dungeonGrid[y].size(); x++) {
+			auto entity = registry.create();
+			registry.emplace<TransformComponent>(entity, Vector2{x * TILE_SIZE, y * TILE_SIZE}, Direction{0,0});
+			
+			switch (dungeonGrid[y][x]) {
+			case C_CORR:
+			case C_DOOR:
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_CORR));
+				break;
+			case C_WALL:
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_WALL));
+				break;
+			case C_ROOM:
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_ROOM));
+				break;
+			}
+		}
+	}
+}
+
+void Game::ClearDungeon() {
+	for (auto [entity, texture] : registry.view<TextureComponent>().each()) {
+		if (texture.targetLayer == RenderLayer::Dungeon) {
+			registry.destroy(entity);
+		}
+	}
 }

@@ -169,6 +169,7 @@
     <ClInclude Include="include\TextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resource\Dungeon.png" />
     <Image Include="resource\Player.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

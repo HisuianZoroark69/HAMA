@@ -4,14 +4,17 @@
 #include <string>
 #include <vector>
 #include <nlohmann\json.hpp>
+#include <PCG\pcg_random.hpp>
+
 
 /**
  * @brief Render layer enum
  * @var RenderLayers::ENUM_END Used to get the layer size for rendering
  */
-enum RenderLayer { Background, Player, GUI, ENUM_END };
+enum RenderLayer { Background, Dungeon, Player, GUI, ENUM_END };
 NLOHMANN_JSON_SERIALIZE_ENUM(RenderLayer, {
 	{Background, "Background"},
+	{Dungeon, "Dungeon"},
 	{Player, "Player"},
 	{GUI, "GUI"},
 })
@@ -48,3 +51,37 @@ struct TextureComponent {
 };
 
 int getSign(float num);
+/**
+	 * @brief Generate a random number in range
+	 * @param rng
+	 * @param min Minimum value
+	 * @param max Maximum value
+	 * @param normal Use normal distribution instead of uniform distribution
+	 * @return A random number in range from min to max
+	 * @see https://www.pcg-random.org/posts/bounded-rands.html
+	 */
+int GetRandomNumber(pcg32& rng, int min, int max, bool normal = false);
+
+/**
+ * @brief Generate a random odd number in range
+ * @param rng
+ * @param min Minimum value
+ * @param max Maximum value
+ * @param normal Use normal distribution instead of uniform distribution
+ * @return A random number in range from min to max
+ * @see https://www.pcg-random.org/posts/bounded-rands.html
+ */
+int GetRandomOddNumber(pcg32& rng, int min, int max, bool normal = false);
+
+/**
+ * @brief Generate a random even number in range
+ * @param rng
+ * @param min Minimum value
+ * @param max Maximum value
+ * @param normal Use normal distribution instead of uniform distribution
+ * @return A random number in range from min to max
+ * @see https://www.pcg-random.org/posts/bounded-rands.html
+ */
+int GetRandomEvenNumber(pcg32& rng, int min, int max, bool normal = false);
+
+const int GetRandomSeed();

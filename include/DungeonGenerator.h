@@ -4,6 +4,9 @@
 #include <string>
 #include <PCG\pcg_random.hpp>
 
+#define MINIMUM_DUNGEON_SIZE 23
+#define MINIMUM_ROOM_AMOUNT 4
+
 using DungeonGrid = std::vector<std::vector<int>>;
 
 const enum CELL { 
@@ -40,39 +43,6 @@ private:
 		int x, y;
 		int width, height;
 	};
-
-	/**
-	 * @brief Generate a random number in range
-	 * @param rng
-	 * @param min Minimum value
-	 * @param max Maximum value
-	 * @param normal Use normal distribution instead of uniform distribution
-	 * @return A random number in range from min to max
-	 * @see https://www.pcg-random.org/posts/bounded-rands.html
-	 */
-	int GetRandomNumber(pcg32& rng, int min, int max, bool normal = false);
-
-	/**
-	 * @brief Generate a random odd number in range
-	 * @param rng
-	 * @param min Minimum value
-	 * @param max Maximum value
-	 * @param normal Use normal distribution instead of uniform distribution
-	 * @return A random number in range from min to max
-	 * @see https://www.pcg-random.org/posts/bounded-rands.html
-	 */
-	int GetRandomOddNumber(pcg32& rng, int min, int max, bool normal = false);
-
-	/**
-	 * @brief Generate a random even number in range
-	 * @param rng
-	 * @param min Minimum value
-	 * @param max Maximum value
-	 * @param normal Use normal distribution instead of uniform distribution
-	 * @return A random number in range from min to max
-	 * @see https://www.pcg-random.org/posts/bounded-rands.html
-	 */
-	int GetRandomEvenNumber(pcg32& rng, int min, int max, bool normal = false);
 
 	/**
 	 * @brief Mark the border of the dungeon with walls
