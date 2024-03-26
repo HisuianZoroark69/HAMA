@@ -26,9 +26,11 @@ void Game::handleEvents() {
 	Player::HandleInput(registry);
 
 	if (IsKeyPressed(KEY_C)) {
-		//Player::Create(registry, "a", "resource/Player.png");
 		ClearDungeon();
 		CreateDungeon("Lmao", 1);
+	}
+	if (IsKeyPressed(KEY_P)) {
+		Player::Create(registry);
 	}
 }
 void Game::update() {
@@ -64,6 +66,7 @@ void Game::CreateDungeon(const std::string seed, int difficulty) {
 
 	DungeonGenerator dg;
 	DungeonGrid dungeonGrid = dg.Generate(data);
+	registry.ctx().emplace<DungeonGrid>(dungeonGrid);
 
 	for (float y = 0; y < dungeonGrid.size(); y++) {
 		for (float x = 0; x < dungeonGrid[y].size(); x++) {
@@ -87,6 +90,7 @@ void Game::CreateDungeon(const std::string seed, int difficulty) {
 }
 
 void Game::ClearDungeon() {
+	registry.ctx().erase<DungeonGrid>();
 	for (auto [entity, texture] : registry.view<TextureComponent>().each()) {
 		if (texture.targetLayer == RenderLayer::Dungeon) {
 			registry.destroy(entity);

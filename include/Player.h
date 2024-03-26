@@ -12,7 +12,6 @@ struct Player {
 	* @brief Player statuses
 	*/
 	struct Status {
-		const std::string name;
 		int HP = 0;
 		Direction movingDirection = { 0,0 };
 	};
@@ -24,7 +23,7 @@ struct Player {
 	 * @param name Player's name
 	 * @param textureFile Player's textureFile
 	 */
-	static entt::entity Create(entt::registry& registry, const std::string name, const char* textureFile);
+	static entt::entity Create(entt::registry& registry);
 
 	/**
 	 * @brief Remove player entity
