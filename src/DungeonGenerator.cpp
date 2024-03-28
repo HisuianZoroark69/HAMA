@@ -1,10 +1,8 @@
 #include "DungeonGenerator.h"
 #include "Auxiliaries.h"
-
-#include <random>
 #include <stack>
-#define ROOM_SPLIT_DEVIATION 3
-#define DOORWAY_COUNT_MULT 0.25
+constexpr auto ROOM_SPLIT_DEVIATION = 3;
+constexpr auto DOORWAY_COUNT_MULT = 0.25;
 
 void printDungeon(const DungeonGrid& dungeon){
     for (int i = 0; i < dungeon.size(); i++) {
@@ -93,10 +91,6 @@ void DungeonGenerator::MarkRooms(const std::vector<Room>& rooms, DungeonGrid& du
             dungeon[y][room.x + room.width] = C_WALL;
         }
     }
-}
-
-bool DungeonGenerator::CheckInBoundary(int x, int y, uint64_t width, uint64_t height) {
-    return !(x < 1 || x > width - 2 || y < 1 || y > height - 2);
 }
 
 bool DungeonGenerator::CheckCorridorsDone(const DungeonGrid& dungeon) {

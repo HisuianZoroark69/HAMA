@@ -78,16 +78,6 @@ private:
 	void MarkRooms(const std::vector<Room>& rooms, DungeonGrid& dungeon);
 
 	/**
-	 * @brief Check if position in the dungeon boundaries
-	 * @param x Current x position
-	 * @param y Current y position
-	 * @param width Dungeon's width
-	 * @param height Dungeon's height
-	 * @return true if position is not in boundary
-	 */
-	bool CheckInBoundary(int x, int y, uint64_t width, uint64_t height);
-
-	/**
 	 * @brief Check if the dungeon is filled with corridors
 	 * @param dungeon The dungeon grid to check
 	 * @return true if The dungeon is filled with corridors

@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <entt\entt.hpp>
+#include <DungeonGenerator.h>
 
 #include "Auxiliaries.h"
 
@@ -35,6 +36,7 @@ struct Player {
 	 */
 	static void HandleInput(entt::registry& registry);
 
+
 	/**
 	 * @brief Update
 	 */
@@ -46,4 +48,7 @@ private:
 
 	static void ClampMovementInTile(Vector2& transform, Vector2& movingDirection);
 	static void ChangeTexture(TextureComponent& oldTexture, TextureComponent newTexture);
+	static void UpdateCameraPosition(const Vector2& position, entt::registry& registry);
+	static void HandleInputDirection(Vector2& movingDirection);
+	static void HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, Vector2& movingDirection);
 };

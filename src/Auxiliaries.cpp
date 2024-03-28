@@ -31,6 +31,10 @@ int GetRandomEvenNumber(pcg32& rng, int min, int max, bool normal) {
     return GetRandomNumber(rng, min / 2, max / 2, normal) * 2;
 }
 
+bool CheckInBoundary(int x, int y, uint64_t width, uint64_t height) {
+    return !(x < 1 || x > width - 2 || y < 1 || y > height - 2);
+}
+
 const int GetRandomSeed() {
     std::random_device rd;
     return rd();
