@@ -1,11 +1,8 @@
 #include <raylib.h>
-#include <nlohmann\json.hpp>
-#include <entt\entt.hpp>
 
-#include "Auxiliaries.h"
-#include "TextureLoader.h"
 #include "Player.h"
 #include "DungeonGenerator.h"
+#include "TextureLoader.h"
 
 #include "Game.h"
 
@@ -13,6 +10,8 @@
 Game::Game(const char* title, int width, int height) {
 	InitWindow(width, height, title);
 	SetTargetFPS(FPS);
+	
+	registry.ctx().emplace<Camera2D>(Camera2D{ .zoom = 1.f});
 	TextureLoader::LoadTextureFromJson("resource/textures.json");
 }
 
@@ -28,28 +27,42 @@ void Game::handleEvents() {
 	if (IsKeyPressed(KEY_C)) {
 		ClearDungeon();
 		CreateDungeon("Lmao", 1);
-	}
-	if (IsKeyPressed(KEY_P)) {
 		Player::Create(registry);
 	}
 }
 void Game::update() {
+	TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
 	Player::Update(registry);
+}
+
+bool Game::IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame) {
+	const Vector2 currScrPos = GetWorldToScreen2D(position, camera);
+	if (currScrPos.x + frame.width < 0) return false; //Left border
+	if (currScrPos.x > SCREEN_SIZE) return false;     //Right border
+	if (currScrPos.y + frame.height < 0) return false;//Top border
+	if (currScrPos.y > SCREEN_SIZE) return false;     //Bottom border
+	return true;
 }
 
 void Game::render() {
 	auto renderObjects = registry.view<TransformComponent, TextureComponent>();
-
 	BeginDrawing();
 	ClearBackground(BLACK);
 
+	const Camera2D camera = registry.ctx().get<const Camera2D>();
+
 	for (int currLayer = 0; currLayer < RenderLayer::ENUM_END; currLayer++) {
+		bool useCamera = GUILayers.find(currLayer) == GUILayers.end();
+
+		if (useCamera) BeginMode2D(camera);
 		for (auto [entity, transform, texture] : renderObjects.each()) {
 			if (currLayer != texture.targetLayer) continue;
 			if (++texture.currentFrame >= texture.frames.size())
 				texture.currentFrame = 0;
-			DrawTextureRec(texture.texture, texture.frames[texture.currentFrame], transform.position, WHITE);
+			if(!useCamera || IsTextureOnScreen(camera, transform.position, texture.frames[texture.currentFrame]))
+				DrawTextureRec(texture.texture, texture.frames[texture.currentFrame], transform.position, WHITE);
 		}
+		if (useCamera) EndMode2D();
 	}
 
 	EndDrawing();

@@ -1,11 +1,8 @@
 #pragma once
 
-#include <entt\entt.hpp>
-
-#include "Auxiliaries.h"
-#include "TextureLoader.h"
-
-#define FPS 60
+#include <string>
+#include <entt/entt.hpp>
+#include <raylib.h>
 
 class Game {
 public:
@@ -38,10 +35,6 @@ public:
 	 */
 	void render();
 
-	void CreateDungeon(const std::string seed, int difficulty);
-
-	void ClearDungeon();
-
 private:
 	/**
 	 * @brief Main Entity Component System (ECS) manager
@@ -51,4 +44,9 @@ private:
 	inline static const std::string TEXTURE_DUNGEON_WALL = "Dungeon_Wall";
 	inline static const std::string TEXTURE_DUNGEON_CORR = "Dungeon_Corr";
 	inline static const std::string TEXTURE_DUNGEON_ROOM = "Dungeon_Room";
+
+
+	bool IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame);
+	void CreateDungeon(const std::string seed, int difficulty);
+	void ClearDungeon();
 };

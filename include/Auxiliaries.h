@@ -5,24 +5,30 @@
 #include <vector>
 #include <nlohmann\json.hpp>
 #include <PCG\pcg_random.hpp>
+#include <set>
 
 
 /**
  * @brief Render layer enum
  * @var RenderLayers::ENUM_END Used to get the layer size for rendering
  */
-enum RenderLayer { Background, Dungeon, Player, GUI, ENUM_END };
+enum RenderLayer {Background, Dungeon, Player, GUI, ENUM_END };
 NLOHMANN_JSON_SERIALIZE_ENUM(RenderLayer, {
 	{Background, "Background"},
 	{Dungeon, "Dungeon"},
 	{Player, "Player"},
 	{GUI, "GUI"},
-})
+	})
+	
+const std::set<int> GUILayers = { GUI };
 /**
 * MOVE_SPEED = Tiles_per_second
 */
-#define MOVE_SPEED 4.f
-#define TILE_SIZE 64
+constexpr auto MOVE_SPEED = 4.f;
+constexpr auto TILE_SIZE = 64;
+constexpr auto FPS = 60;
+constexpr auto SCREEN_SIZE = 640;
+constexpr auto CAMERA_BORDER_SIZE = 3;
 
 /**
  * @brief Direction -> vector2
@@ -83,5 +89,15 @@ int GetRandomOddNumber(pcg32& rng, int min, int max, bool normal = false);
  * @see https://www.pcg-random.org/posts/bounded-rands.html
  */
 int GetRandomEvenNumber(pcg32& rng, int min, int max, bool normal = false);
+
+/**
+ * @brief Check if position in the dungeon boundaries
+ * @param x Current x position
+ * @param y Current y position
+ * @param width Dungeon's width
+ * @param height Dungeon's height
+ * @return true if position is not in boundary
+ */
+bool CheckInBoundary(int x, int y, uint64_t width, uint64_t height);
 
 const int GetRandomSeed();
