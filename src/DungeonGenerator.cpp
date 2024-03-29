@@ -216,6 +216,8 @@ std::vector<std::pair<int, int>> DungeonGenerator::GenerateDoorways(pcg32& rng, 
         const int doorCount = GetRandomNumber(rng, 1, doorPositions.size() * DOORWAY_COUNT_MULT, true);
         for (int i = 0; i < doorCount; i++) {
             dungeon[doorPositions[i].second][doorPositions[i].first] = C_DOOR;
+
+            //Choose the cell next to the door to generate corridors
             std::pair<int, int> temp = doorPositions[i];
             if (doorPositions[i].first % 2 == 0) {
                 if (dungeon[doorPositions[i].second][doorPositions[i].first + 1] == C_ROOM) temp.first -= 1;
@@ -232,7 +234,7 @@ std::vector<std::pair<int, int>> DungeonGenerator::GenerateDoorways(pcg32& rng, 
     
 }
 
-DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data)
+DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data, std::pair<int, int>& spawnPosition)
 {
     //# Variables
     pcg32 rng(std::hash<std::string>{}(data.seed));
@@ -262,7 +264,12 @@ DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data)
     FillDungeon(dungeon);
 
     //Todo: Add Spawn
-    
+    Room spawnRoom = rooms[GetRandomNumber(rng, 0, rooms.size() - 1)];
+    spawnPosition = { 
+        GetRandomNumber(rng, spawnRoom.x, spawnRoom.x + spawnRoom.width - 1),
+        GetRandomNumber(rng, spawnRoom.y, spawnRoom.y + spawnRoom.height - 1)
+    };
+    //dungeon[spawnPosition.second][spawnPosition.first] = C_SPAWN;
 
     //Todo: Add Stairs
     //Todo: Add objectives?

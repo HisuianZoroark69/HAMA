@@ -27,9 +27,9 @@ void Game::handleEvents() {
 	Player::HandleInput(registry);
 
 	if (IsKeyPressed(KEY_C)) {
+		Player::Create(registry);
 		ClearDungeon();
 		CreateDungeon("Lmao", 1);
-		Player::Create(registry);
 	}
 }
 void Game::update() {
@@ -80,7 +80,17 @@ void Game::CreateDungeon(const std::string seed, int difficulty) {
 	};
 
 	DungeonGenerator dg;
-	DungeonGrid dungeonGrid = dg.Generate(data);
+	std::pair<int, int> spawnPos;
+	DungeonGrid dungeonGrid = dg.Generate(data, spawnPos);
+
+	//Make players spawn at designated position
+	auto players = registry.view<TransformComponent, Player::Status>().each();
+	for (auto [entity, transform, status] : players) {
+		transform.position.x = spawnPos.first * TILE_SIZE;
+		transform.position.y = spawnPos.second * TILE_SIZE;
+		transform.orientation = Vector2Zero();
+	}
+
 	registry.ctx().emplace<DungeonGrid>(dungeonGrid);
 
 	for (float y = 0; y < dungeonGrid.size(); y++) {

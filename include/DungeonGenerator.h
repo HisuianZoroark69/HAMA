@@ -14,7 +14,8 @@ const enum CELL {
 	C_WALL, 
 	C_ROOM, 
 	C_CORR, 
-	C_DOOR 
+	C_DOOR,
+	C_SPAWN
 };
 
 struct DungeonGenerateData {
@@ -36,7 +37,7 @@ struct DungeonGenerateData {
  */
 class DungeonGenerator {
 public:
-	DungeonGrid Generate(const DungeonGenerateData& data);
+	DungeonGrid Generate(const DungeonGenerateData& data, std::pair<int, int>& spawnPosition);
 private:
 
 	struct Room {
