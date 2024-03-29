@@ -67,7 +67,6 @@ void Player::Update(entt::registry& registry)
 		//Update camera position
 		UpdateCameraPosition(transform.position, registry);
 
-		//TODO: Add player's update
 		transform.orientation = status.movingDirection;
 		ClampMovementInTile(transform.position, status.movingDirection);
 	}
@@ -113,7 +112,6 @@ void Player::HandleInput(entt::registry& registry)
 {
 	auto playerView = registry.view<TransformComponent, TextureComponent, Status>();
 	for (auto [player, transform, texture, status] : playerView.each()) {
-		//TODO: Add player input
 		if (status.movingDirection.x == 0 && status.movingDirection.y == 0) {
 			ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE));
 			HandleInputDirection(status.movingDirection);

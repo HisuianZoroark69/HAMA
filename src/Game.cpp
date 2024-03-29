@@ -6,11 +6,13 @@
 
 #include "Game.h"
 
+//Todo: Add game states such as menu and stuffs
+
+//Todo: Add minimap
 
 Game::Game(const char* title, int width, int height) {
 	InitWindow(width, height, title);
 	SetTargetFPS(FPS);
-	
 	registry.ctx().emplace<Camera2D>(Camera2D{ .zoom = 1.f});
 	TextureLoader::LoadTextureFromJson("resource/textures.json");
 }
@@ -31,7 +33,7 @@ void Game::handleEvents() {
 	}
 }
 void Game::update() {
-	TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
+	//TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
 	Player::Update(registry);
 }
 

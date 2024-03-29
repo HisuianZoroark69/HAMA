@@ -4,8 +4,8 @@
 #include <string>
 #include <PCG\pcg_random.hpp>
 
-#define MINIMUM_DUNGEON_SIZE 23
-#define MINIMUM_ROOM_AMOUNT 4
+constexpr auto MINIMUM_DUNGEON_SIZE = 23;
+constexpr auto MINIMUM_ROOM_AMOUNT = 4;
 
 using DungeonGrid = std::vector<std::vector<int>>;
 
@@ -114,8 +114,9 @@ private:
 	 * @param rng Random number generator
 	 * @param dungeon The dungeon grid
 	 * @param rooms List of rooms
+	 * @return List of doorway positions suitable to generate corridors
 	 */
-	void GenerateDoorways(pcg32& rng, DungeonGrid& dungeon, const std::vector<Room>& rooms);
+	std::vector<std::pair<int, int>> GenerateDoorways(pcg32& rng, DungeonGrid& dungeon, const std::vector<Room>& rooms);
 
 
 };

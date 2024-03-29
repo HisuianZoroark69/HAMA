@@ -173,9 +173,10 @@ void DungeonGenerator::FillDungeon(DungeonGrid& dungeon) {
         }
     }
 }
-void DungeonGenerator::GenerateDoorways(pcg32& rng, DungeonGrid& dungeon, const std::vector<Room>& rooms) {
+std::vector<std::pair<int, int>> DungeonGenerator::GenerateDoorways(pcg32& rng, DungeonGrid& dungeon, const std::vector<Room>& rooms) {
     const uint64_t height = dungeon.size();
     const uint64_t width = dungeon[0].size();
+    std::vector<std::pair<int, int>> doorways;
     
     for (const auto& room : rooms) {
         //Get all positions that can create doorways (odd col/row)
@@ -188,33 +189,25 @@ void DungeonGenerator::GenerateDoorways(pcg32& rng, DungeonGrid& dungeon, const 
         //Handle top border
         if (CheckInBoundary(room.x, topBorder - 1, width, height)) {
             for (int x = room.x; x < room.x + room.width; x += 2) {
-                if (dungeon[topBorder - 1][x] == C_ROOM || dungeon[topBorder - 1][x] == C_CORR) {
-                    doorPositions.push_back({ x, topBorder });
-                }
+                doorPositions.push_back({ x, topBorder });
             }
         }
         //Handle bottom border
         if (CheckInBoundary(room.x, botBorder + 1, width, height)) {
             for (int x = room.x; x < room.x + room.width; x += 2) {
-                if (dungeon[botBorder + 1][x] == C_ROOM || dungeon[botBorder + 1][x] == C_CORR) {
-                    doorPositions.push_back({ x, botBorder });
-                }
+                doorPositions.push_back({ x, botBorder });
             }
         }
         //Handle left border
         if (CheckInBoundary(leftBorder - 1, room.y, width, height)) {
             for (int y = room.y; y < room.y + room.height; y += 2) {
-                if (dungeon[y][leftBorder - 1] == C_ROOM || dungeon[y][leftBorder - 1] == C_CORR) {
-                    doorPositions.push_back({ leftBorder, y });
-                }
+                doorPositions.push_back({ leftBorder, y });
             }
         }
         //Handle right border
         if (CheckInBoundary(rightBorder + 1, room.y, width, height)) {
             for (int y = room.y; y < room.y + room.height; y += 2) {
-                if (dungeon[y][rightBorder + 1] == C_ROOM || dungeon[y][rightBorder + 1] == C_CORR) {
-                    doorPositions.push_back({ rightBorder, y });
-                }
+                doorPositions.push_back({ rightBorder, y });
             }
         }
 
@@ -223,8 +216,20 @@ void DungeonGenerator::GenerateDoorways(pcg32& rng, DungeonGrid& dungeon, const 
         const int doorCount = GetRandomNumber(rng, 1, doorPositions.size() * DOORWAY_COUNT_MULT, true);
         for (int i = 0; i < doorCount; i++) {
             dungeon[doorPositions[i].second][doorPositions[i].first] = C_DOOR;
+            std::pair<int, int> temp = doorPositions[i];
+            if (doorPositions[i].first % 2 == 0) {
+                if (dungeon[doorPositions[i].second][doorPositions[i].first + 1] == C_ROOM) temp.first -= 1;
+                else if (dungeon[doorPositions[i].second][doorPositions[i].first - 1] == C_ROOM) temp.first += 1;
+            }
+            else if (doorPositions[i].second % 2 == 0) {
+                if (dungeon[doorPositions[i].second + 1][doorPositions[i].first] == C_ROOM) temp.second -= 1;
+                else if (dungeon[doorPositions[i].second - 1][doorPositions[i].first] == C_ROOM) temp.second += 1;
+            }
+            doorways.push_back(temp);
         }
     }
+    return doorways;
+    
 }
 
 DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data)
@@ -244,23 +249,24 @@ DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data)
     CreateRoom(rng, rooms, data.roomMinWidth, data.roomMinHeight);
 
     MarkRooms(rooms, dungeon);
+    //# Generate doorways
+
+    const auto doorways = GenerateDoorways(rng, dungeon, rooms);
 
     //# Generate corridors
-    while (!CheckCorridorsDone(dungeon)) {
-        int start_x = GetRandomOddNumber(rng, 1, data.width - 2);
-        int start_y = GetRandomOddNumber(rng, 1, data.height - 2);
-        while (dungeon[start_y][start_x] != C_EMPTY) {
-            start_x = GetRandomOddNumber(rng, 1, data.width - 2);
-            start_y = GetRandomOddNumber(rng, 1, data.height - 2);
-        }
-        GenerateCorridors(dungeon, rng, start_x, start_y);
+    for(auto doorway : doorways) {
+        if (CheckCorridorsDone(dungeon)) break;
+        GenerateCorridors(dungeon, rng, doorway.first, doorway.second);
     }
 
     FillDungeon(dungeon);
 
-    //# Generate doorways
+    //Todo: Add Spawn
+    
 
-    GenerateDoorways(rng, dungeon, rooms);
+    //Todo: Add Stairs
+    //Todo: Add objectives?
+
 
     return dungeon;
 }
