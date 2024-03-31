@@ -234,6 +234,40 @@ std::vector<std::pair<int, int>> DungeonGenerator::GenerateDoorways(pcg32& rng, 
     
 }
 
+void DungeonGenerator::GenerateSpawn(pcg32& rng, const std::vector<Room>& rooms, std::pair<int, int>& spawnPosition) {
+    Room spawnRoom = GetRandomElement(rng, rooms);
+    spawnPosition = {
+        GetRandomNumber(rng, spawnRoom.x, spawnRoom.x + spawnRoom.width - 1),
+        GetRandomNumber(rng, spawnRoom.y, spawnRoom.y + spawnRoom.height - 1)
+    };
+}
+
+std::vector<std::pair<int, int>> DungeonGenerator::GetDeadends(const DungeonGrid& dg) {
+    //Add deadend if there are 3 wall cells borders it
+    std::vector<std::pair<int, int>> ret;
+    for (int y = 0; y < dg.size(); y++) {
+        for (int x = 0; x < dg[y].size(); x++) {
+            if (dg[y][x] != C_CORR) continue;
+            std::vector<std::pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+            int count = 0;
+            for (auto dir : directions) {
+                if (dg[y + dir.second][x + dir.first] == C_WALL)
+                    count++;
+            }
+            if (count == 3) {
+                ret.push_back({ x, y });
+            }
+        }
+    }
+    return ret;
+}
+
+void DungeonGenerator::GenerateStair(pcg32& rng, DungeonGrid& dg) {
+    auto deadends = GetDeadends(dg);
+    auto stairPos = GetRandomElement(rng, deadends);
+    dg[stairPos.second][stairPos.first] = C_STAIR;
+}
+
 DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data, std::pair<int, int>& spawnPosition)
 {
     //# Variables
@@ -262,18 +296,12 @@ DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data, std::pai
     }
 
     FillDungeon(dungeon);
+    GenerateSpawn(rng, rooms, spawnPosition);
+    GenerateStair(rng, dungeon);
+    
 
-    //Todo: Add Spawn
-    Room spawnRoom = rooms[GetRandomNumber(rng, 0, rooms.size() - 1)];
-    spawnPosition = { 
-        GetRandomNumber(rng, spawnRoom.x, spawnRoom.x + spawnRoom.width - 1),
-        GetRandomNumber(rng, spawnRoom.y, spawnRoom.y + spawnRoom.height - 1)
-    };
-    //dungeon[spawnPosition.second][spawnPosition.first] = C_SPAWN;
-
-    //Todo: Add Stairs
     //Todo: Add objectives?
 
-
+    //printDungeon(dungeon);
     return dungeon;
 }

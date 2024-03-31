@@ -6,7 +6,10 @@
 #include <nlohmann\json.hpp>
 #include <PCG\pcg_random.hpp>
 #include <set>
+#include <entt/entt.hpp>
+#include <random>
 
+using entt::operator"" _hs;
 
 /**
  * @brief Render layer enum
@@ -29,6 +32,8 @@ constexpr auto TILE_SIZE = 64;
 constexpr auto FPS = 60;
 constexpr auto SCREEN_SIZE = 640;
 constexpr auto CAMERA_BORDER_SIZE = 3;
+
+constexpr auto DUNGEON_REG_NAME = "map"_hs;
 
 /**
  * @brief Direction -> vector2
@@ -89,6 +94,13 @@ int GetRandomOddNumber(pcg32& rng, int min, int max, bool normal = false);
  * @see https://www.pcg-random.org/posts/bounded-rands.html
  */
 int GetRandomEvenNumber(pcg32& rng, int min, int max, bool normal = false);
+
+template <class T>
+T GetRandomElement(pcg32& rng, const std::vector<T>& arr, bool normal = false)
+{
+	return arr[GetRandomNumber(rng, 0, arr.size() - 1, normal)];
+	//return *(begin + GetRandomNumber(rng, 0, (end - begin, normal));
+}
 
 /**
  * @brief Check if position in the dungeon boundaries

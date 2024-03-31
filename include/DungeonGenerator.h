@@ -15,7 +15,8 @@ const enum CELL {
 	C_ROOM, 
 	C_CORR, 
 	C_DOOR,
-	C_SPAWN
+	C_SPAWN,
+	C_STAIR
 };
 
 struct DungeonGenerateData {
@@ -118,6 +119,12 @@ private:
 	 * @return List of doorway positions suitable to generate corridors
 	 */
 	std::vector<std::pair<int, int>> GenerateDoorways(pcg32& rng, DungeonGrid& dungeon, const std::vector<Room>& rooms);
+
+	void GenerateSpawn(pcg32& rng, const std::vector<Room>& rooms, std::pair<int, int>& spawnPosition);
+
+	std::vector<std::pair<int, int>> GetDeadends(const DungeonGrid& dg);
+
+	void GenerateStair(pcg32& rng, DungeonGrid& dg);
 
 
 };

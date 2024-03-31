@@ -6,9 +6,12 @@
 
 #include "Game.h"
 
+
 //Todo: Add game states such as menu and stuffs
 
 //Todo: Add minimap
+
+
 
 Game::Game(const char* title, int width, int height) {
 	InitWindow(width, height, title);
@@ -91,7 +94,7 @@ void Game::CreateDungeon(const std::string seed, int difficulty) {
 		transform.orientation = Vector2Zero();
 	}
 
-	registry.ctx().emplace<DungeonGrid>(dungeonGrid);
+	registry.ctx().emplace_as<DungeonGrid>(DUNGEON_REG_NAME, dungeonGrid);
 
 	for (float y = 0; y < dungeonGrid.size(); y++) {
 		for (float x = 0; x < dungeonGrid[y].size(); x++) {
@@ -115,7 +118,7 @@ void Game::CreateDungeon(const std::string seed, int difficulty) {
 }
 
 void Game::ClearDungeon() {
-	registry.ctx().erase<DungeonGrid>();
+	registry.ctx().erase<DungeonGrid>(DUNGEON_REG_NAME);
 	for (auto [entity, texture] : registry.view<TextureComponent>().each()) {
 		if (texture.targetLayer == RenderLayer::Dungeon) {
 			registry.destroy(entity);

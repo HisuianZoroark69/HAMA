@@ -115,7 +115,7 @@ void Player::HandleInput(entt::registry& registry)
 		if (status.movingDirection.x == 0 && status.movingDirection.y == 0) {
 			ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE));
 			HandleInputDirection(status.movingDirection);
-			const auto dg = registry.ctx().get<const DungeonGrid>();
+			const auto dg = registry.ctx().get<const DungeonGrid>(DUNGEON_REG_NAME);
 			HandleMovementInDungeon(dg, transform.position, status.movingDirection);
 		}
 		else {
