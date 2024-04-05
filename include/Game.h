@@ -47,6 +47,9 @@ private:
 
 
 	bool IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame);
+	void UpdateMinimap();
+	void RenderMinimap();
+	void RenderTextureComponents();
 	void CreateDungeon(const std::string seed, int difficulty);
 	void ClearDungeon();
 };

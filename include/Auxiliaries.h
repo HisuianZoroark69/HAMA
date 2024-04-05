@@ -15,13 +15,14 @@ using entt::operator"" _hs;
  * @brief Render layer enum
  * @var RenderLayers::ENUM_END Used to get the layer size for rendering
  */
-enum RenderLayer {Background, Dungeon, Player, GUI, ENUM_END };
+enum RenderLayer {Background, Dungeon, Player, GUI, Minimap, ENUM_END };
 NLOHMANN_JSON_SERIALIZE_ENUM(RenderLayer, {
 	{Background, "Background"},
 	{Dungeon, "Dungeon"},
 	{Player, "Player"},
 	{GUI, "GUI"},
-	})
+	{Minimap, "Minimap"}
+})
 	
 const std::set<int> GUILayers = { GUI };
 /**
@@ -32,8 +33,10 @@ constexpr auto TILE_SIZE = 64;
 constexpr auto FPS = 60;
 constexpr auto SCREEN_SIZE = 640;
 constexpr auto CAMERA_BORDER_SIZE = 3;
+constexpr auto MINIMAP_RADIUS = 15; //Tiles
 
-constexpr auto DUNGEON_REG_NAME = "map"_hs;
+constexpr auto DUNGEON_REG_NAME = "dungeon"_hs;
+constexpr auto MINIMAP_REG_NAME = "minimap"_hs;
 
 /**
  * @brief Direction -> vector2
