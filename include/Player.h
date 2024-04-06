@@ -50,6 +50,6 @@ private:
 	static void ClampMovementInTile(Vector2& transform, Vector2& movingDirection, bool isSprinting);
 	static void ChangeTexture(TextureComponent& oldTexture, TextureComponent newTexture);
 	static void UpdateCameraPosition(const Vector2& position, entt::registry& registry);
-	static void HandleInputDirection(Vector2& movingDirection);
+	static bool HandleInputDirection(Vector2& movingDirection);
 	static void HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, Vector2& movingDirection);
 };

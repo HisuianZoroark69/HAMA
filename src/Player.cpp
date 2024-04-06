@@ -19,7 +19,7 @@ void Player::Remove(entt::registry& registry, entt::entity& entity)
 void Player::ClampMovementInTile(Vector2& position, Vector2& movingDirection, bool isSprinting)
 {
 	//Force movement in tile
-	if (isSprinting) {
+	/*if (isSprinting) {
 		position.x = round(position.x / TILE_SIZE) * TILE_SIZE;
 		position.y = round(position.y / TILE_SIZE) * TILE_SIZE;
 
@@ -28,24 +28,26 @@ void Player::ClampMovementInTile(Vector2& position, Vector2& movingDirection, bo
 
 		movingDirection = Vector2Zero();
 		return;
-	}
+	}*/
 
-	if (abs(movingDirection.x) < GetFrameTime() * MOVE_SPEED) {
+	auto moveSpeed = MOVE_SPEED * (isSprinting ? 10 : 1);
+
+	if (abs(movingDirection.x) < GetFrameTime() * moveSpeed) {
 		position.x = round(position.x / TILE_SIZE) * TILE_SIZE;
 		movingDirection.x = 0;
 	}
 	else {
-		movingDirection.x -= getSign(movingDirection.x) * MOVE_SPEED * GetFrameTime();
-		position.x += round(getSign(movingDirection.x) * TILE_SIZE * MOVE_SPEED * GetFrameTime());
+		movingDirection.x -= getSign(movingDirection.x) * moveSpeed * GetFrameTime();
+		position.x += round(getSign(movingDirection.x) * TILE_SIZE * moveSpeed * GetFrameTime());
 	}
 
-	if (abs(movingDirection.y) < GetFrameTime() * MOVE_SPEED) {
+	if (abs(movingDirection.y) < GetFrameTime() * moveSpeed) {
 		position.y = round(position.y / TILE_SIZE) * TILE_SIZE;
 		movingDirection.y = 0;
 	}
 	else {
-		movingDirection.y -= getSign(movingDirection.y) * MOVE_SPEED * GetFrameTime();
-		position.y -= round(getSign(movingDirection.y) * TILE_SIZE * MOVE_SPEED * GetFrameTime());
+		movingDirection.y -= getSign(movingDirection.y) * moveSpeed * GetFrameTime();
+		position.y -= round(getSign(movingDirection.y) * TILE_SIZE * moveSpeed * GetFrameTime());
 	}
 }
 
@@ -83,19 +85,25 @@ void Player::Update(entt::registry& registry)
 	}
 }
 
-void Player::HandleInputDirection(Vector2& movingDirection) {
+bool Player::HandleInputDirection(Vector2& movingDirection) {
+	bool ret = false;
 	if (IsKeyDown(KEY_A)) {
 		movingDirection.x = -1;
+		ret = true;
 	}
 	else if (IsKeyDown(KEY_D)) {
 		movingDirection.x = 1;
+		ret = true;
 	}
 	if (IsKeyDown(KEY_W)) {
 		movingDirection.y = 1;
+		ret = true;
 	}
 	else if (IsKeyDown(KEY_S)) {
 		movingDirection.y = -1;
+		ret = true;
 	}
+	return ret;
 }
 
 void Player::HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, Vector2& movingDirection) {
@@ -127,8 +135,10 @@ void Player::HandleInput(entt::registry& registry)
 		status.isSprinting = IsKeyDown(KEY_LEFT_SHIFT);
 
 		if (status.movingDirection.x == 0 && status.movingDirection.y == 0) {
-			ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE));
-			HandleInputDirection(status.movingDirection);
+			if(!HandleInputDirection(status.movingDirection))
+				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE));
+			else
+				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_RUNNING));
 			const auto dg = registry.ctx().get<const DungeonGrid>(DUNGEON_REG_NAME);
 			HandleMovementInDungeon(dg, transform.position, status.movingDirection);
 		}
