@@ -16,9 +16,20 @@ void Player::Remove(entt::registry& registry, entt::entity& entity)
 	registry.destroy(entity);
 }
 
-void Player::ClampMovementInTile(Vector2& position, Vector2& movingDirection)
+void Player::ClampMovementInTile(Vector2& position, Vector2& movingDirection, bool isSprinting)
 {
 	//Force movement in tile
+	if (isSprinting) {
+		position.x = round(position.x / TILE_SIZE) * TILE_SIZE;
+		position.y = round(position.y / TILE_SIZE) * TILE_SIZE;
+
+		position.x += round(getSign(movingDirection.x) * TILE_SIZE);
+		position.y -= round(getSign(movingDirection.y) * TILE_SIZE);
+
+		movingDirection = Vector2Zero();
+		return;
+	}
+
 	if (abs(movingDirection.x) < GetFrameTime() * MOVE_SPEED) {
 		position.x = round(position.x / TILE_SIZE) * TILE_SIZE;
 		movingDirection.x = 0;
@@ -68,7 +79,7 @@ void Player::Update(entt::registry& registry)
 		UpdateCameraPosition(transform.position, registry);
 
 		transform.orientation = status.movingDirection;
-		ClampMovementInTile(transform.position, status.movingDirection);
+		ClampMovementInTile(transform.position, status.movingDirection, status.isSprinting);
 	}
 }
 
@@ -113,6 +124,8 @@ void Player::HandleInput(entt::registry& registry)
 	//Todo: add fast movement by holding shift
 	auto playerView = registry.view<TransformComponent, TextureComponent, Status>();
 	for (auto [player, transform, texture, status] : playerView.each()) {
+		status.isSprinting = IsKeyDown(KEY_LEFT_SHIFT);
+
 		if (status.movingDirection.x == 0 && status.movingDirection.y == 0) {
 			ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE));
 			HandleInputDirection(status.movingDirection);

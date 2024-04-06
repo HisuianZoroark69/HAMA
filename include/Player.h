@@ -15,6 +15,7 @@ struct Player {
 	struct Status {
 		int HP = 0;
 		Direction movingDirection = { 0,0 };
+		bool isSprinting = false;
 	};
 
 
@@ -46,7 +47,7 @@ private:
 	inline static const std::string TEXTURE_IDLE = "Player_Idle";
 	inline static const std::string TEXTURE_RUNNING = "Player_Running";
 
-	static void ClampMovementInTile(Vector2& transform, Vector2& movingDirection);
+	static void ClampMovementInTile(Vector2& transform, Vector2& movingDirection, bool isSprinting);
 	static void ChangeTexture(TextureComponent& oldTexture, TextureComponent newTexture);
 	static void UpdateCameraPosition(const Vector2& position, entt::registry& registry);
 	static void HandleInputDirection(Vector2& movingDirection);
