@@ -33,7 +33,7 @@ constexpr auto TILE_SIZE = 64;
 constexpr auto FPS = 60;
 constexpr auto SCREEN_SIZE = 640;
 constexpr auto CAMERA_BORDER_SIZE = 3;
-constexpr auto MINIMAP_RADIUS = 15; //Tiles
+constexpr auto MINIMAP_RADIUS = 8; //Tiles
 
 constexpr auto DUNGEON_REG_NAME = "dungeon"_hs;
 constexpr auto MINIMAP_REG_NAME = "minimap"_hs;

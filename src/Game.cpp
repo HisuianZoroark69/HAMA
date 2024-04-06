@@ -1,9 +1,7 @@
 #include <raylib.h>
 
 #include "Player.h"
-#include "DungeonGenerator.h"
 #include "TextureLoader.h"
-
 #include "Game.h"
 
 
@@ -42,6 +40,13 @@ void Game::handleEvents() {
 		ClearDungeon();
 		CreateDungeon("Lmao", 1);
 	}
+	if (IsKeyPressed(KEY_M)) {
+		minimapFullscreen = !minimapFullscreen;
+		minimapFullscreenOffset = Vector2Zero();
+	}
+	if (minimapFullscreen && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+		minimapFullscreenOffset = Vector2Add(minimapFullscreenOffset, GetMouseDelta());
+	}
 }
 void Game::UpdateMinimap() {
 	if (!registry.ctx().contains<DungeonGrid>(MINIMAP_REG_NAME))
@@ -75,40 +80,61 @@ void Game::RenderMinimap() {
 	if (!registry.ctx().contains<DungeonGrid>(MINIMAP_REG_NAME))
 		return;
 
-	int minimapPixelSize = TextureLoader::GetTexture("Minimap_Wall").frames[0].width;
+	float minimapPixelSize = TextureLoader::GetTexture("Minimap_Wall").frames[0].width;
 	int minimapSize = SCREEN_SIZE / TILE_SIZE * minimapPixelSize;
-	//RenderTexture2D mapTex = LoadRenderTexture(minimapSize, minimapSize);
 	DungeonGrid mapGrid = registry.ctx().get<DungeonGrid>(MINIMAP_REG_NAME);
 
 	entt::entity playerEnt = registry.view<TransformComponent, Player::Status>().front();
 	Vector2 playerPos = registry.get<TransformComponent>(playerEnt).position;
 	playerPos = Vector2Scale(playerPos, 1.f / TILE_SIZE);
-	//BeginScissorMode(0, 0, minimapSize, minimapSize);
 
-	for (int y = 0; y < 2 * MINIMAP_RADIUS; y++) {
-		for (int x = 0; x < 2 * MINIMAP_RADIUS; x++) {
-			if (playerPos.x - MINIMAP_RADIUS + x < 0 || playerPos.x - MINIMAP_RADIUS + x >= mapGrid[0].size())
-				continue;
-			if (playerPos.y - MINIMAP_RADIUS + y < 0 || playerPos.y - MINIMAP_RADIUS + y >= mapGrid.size())
-				continue;
+	if (!minimapFullscreen) {
+		for (int y = 0; y < 2 * MINIMAP_RADIUS; y++) {
+			for (int x = 0; x < 2 * MINIMAP_RADIUS; x++) {
+				if (playerPos.x - MINIMAP_RADIUS + x < 0 || playerPos.x - MINIMAP_RADIUS + x >= mapGrid[0].size())
+					continue;
+				if (playerPos.y - MINIMAP_RADIUS + y < 0 || playerPos.y - MINIMAP_RADIUS + y >= mapGrid.size())
+					continue;
 
-			switch (mapGrid[playerPos.y - MINIMAP_RADIUS + y][playerPos.x - MINIMAP_RADIUS + x]) {
-			case C_WALL:
-				DrawRectangle(x * minimapPixelSize, y * minimapPixelSize,
-					minimapPixelSize, minimapPixelSize, WHITE);
-				break;
-			case C_STAIR:
-				DrawRectangle(x * minimapPixelSize, y * minimapPixelSize,
-					minimapPixelSize, minimapPixelSize, BLUE);
-				break;
+				auto currCell = mapGrid[playerPos.y - MINIMAP_RADIUS + y][playerPos.x - MINIMAP_RADIUS + x];
+				if (DUNGEON_CELL_COLOR.find(currCell) != DUNGEON_CELL_COLOR.end()) {
+					auto color = DUNGEON_CELL_COLOR.at(currCell);
+					DrawRectangle(x * minimapPixelSize, y * minimapPixelSize,
+						minimapPixelSize, minimapPixelSize, color);
+				}
 			}
 		}
+		//Draw player on map
+		DrawRectangle(MINIMAP_RADIUS * minimapPixelSize, MINIMAP_RADIUS * minimapPixelSize,
+			minimapPixelSize, minimapPixelSize, GREEN);
 	}
+	else {
+		ClearBackground(BLACK);
+		minimapPixelSize *= 2;
+		int rad = SCREEN_SIZE / minimapPixelSize / 2;
+		for (int y = 0; y < rad * 2; y++) {
+			for (int x = 0; x < rad * 2; x++) {
+				if (playerPos.x - rad + x < 0 || playerPos.x - rad + x >= mapGrid[0].size())
+					continue;
+				if (playerPos.y - rad + y < 0 || playerPos.y - rad + y >= mapGrid.size())
+					continue;
 
-	DrawRectangle(MINIMAP_RADIUS * minimapPixelSize, MINIMAP_RADIUS * minimapPixelSize,
-		minimapPixelSize, minimapPixelSize, GREEN);
-
-	//EndScissorMode();
+				auto currCell = mapGrid[playerPos.y - rad + y][playerPos.x - rad + x];
+				if (DUNGEON_CELL_COLOR.find(currCell) != DUNGEON_CELL_COLOR.end()) {
+					auto color = DUNGEON_CELL_COLOR.at(currCell);
+					DrawRectangleV(
+						Vector2Add({ x * minimapPixelSize, y * minimapPixelSize }, minimapFullscreenOffset),
+						{ minimapPixelSize, minimapPixelSize },
+						color);
+				}
+			}
+		}
+		//Draw player on map
+		DrawRectangleV(
+			Vector2Add({ SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f }, minimapFullscreenOffset),
+			{ minimapPixelSize, minimapPixelSize },
+		GREEN);
+	}
 }
 
 void Game::RenderTextureComponents() {
