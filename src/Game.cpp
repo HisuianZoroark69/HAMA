@@ -142,19 +142,28 @@ void Game::RenderMinimap() {
 }
 
 void Game::RenderTextureComponents() {
-	const Camera2D camera = registry.ctx().get<const Camera2D>();
+	Camera2D camera = registry.ctx().get<Camera2D>();
 	auto renderObjects = registry.view<TransformComponent, TextureComponent>();
-	for (int currLayer = 0; currLayer < RenderLayer::ENUM_END; currLayer++) {
-		bool useCamera = GUILayers.find(currLayer) == GUILayers.end();
 
+	std::map<RenderLayer, std::vector<std::pair<TransformComponent, TextureComponent>>> renderObjectMap;
+	for (auto [_,transform, texture] : renderObjects.each()) {
+		if (++texture.currentFrame >= texture.frames.size())
+			texture.currentFrame = 0;
+		if (!IsTextureOnScreen(camera, transform.position, texture.frames[texture.currentFrame]))
+			continue;
+		renderObjectMap[texture.targetLayer].push_back({ transform, texture });
+	}
+
+	for (int currLayer = 0; currLayer < RenderLayer::ENUM_END; currLayer++) {
+		if (renderObjectMap.find(static_cast<RenderLayer>(currLayer)) == renderObjectMap.end()) continue;
+
+		bool useCamera = GUILayers.find(currLayer) == GUILayers.end();
 		if (useCamera) BeginMode2D(camera);
-		for (auto [entity, transform, texture] : renderObjects.each()) {
-			if (currLayer != texture.targetLayer) continue;
-			if (++texture.currentFrame >= texture.frames.size())
-				texture.currentFrame = 0;
-			if (!useCamera || IsTextureOnScreen(camera, transform.position, texture.frames[texture.currentFrame]))
-				DrawTextureRec(texture.texture, texture.frames[texture.currentFrame], transform.position, WHITE);
+
+		for (auto [transform, texture] : renderObjectMap[static_cast<RenderLayer>(currLayer)]) {
+			DrawTextureRec(texture.texture, texture.frames[texture.currentFrame], transform.position, WHITE);
 		}
+
 		if (useCamera) EndMode2D();
 	}
 }
