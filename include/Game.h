@@ -44,6 +44,7 @@ private:
 	entt::registry registry;
 	bool minimapFullscreen;
 	Vector2 minimapFullscreenOffset;
+	int dungeonDifficulty = 5;
 
 	inline static const std::string TEXTURE_DUNGEON_WALL = "Dungeon_Wall";
 	inline static const std::string TEXTURE_DUNGEON_CORR = "Dungeon_Corr";
@@ -53,9 +54,11 @@ private:
 
 
 	bool IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame);
+	void GameStart();
+	bool CheckPlayerAtStair();
 	void UpdateMinimap();
 	void RenderMinimap();
 	void RenderTextureComponents();
-	void CreateDungeon(const std::string seed, int difficulty);
+	void CreateDungeon(int difficulty, const std::string seed = "");
 	void ClearDungeon();
 };

@@ -16,6 +16,8 @@ Game::Game(const char* title, int width, int height) {
 	SetTargetFPS(FPS);
 	registry.ctx().emplace<Camera2D>(Camera2D{ .zoom = 1.f});
 	TextureLoader::LoadTextureFromJson("resource/textures.json");
+
+	GameStart();
 }
 
 Game::~Game() {
@@ -32,13 +34,32 @@ bool Game::IsTextureOnScreen(const Camera2D& camera, const Vector2& position, co
 	return true;
 }
 
+void Game::GameStart() {
+	Player::Create(registry);
+	ClearDungeon();
+	dungeonDifficulty = 5;
+	CreateDungeon(dungeonDifficulty++);
+}
+
+bool Game::CheckPlayerAtStair() {
+	if (!registry.ctx().contains<DungeonGrid>(MINIMAP_REG_NAME))
+		return false;
+
+	const DungeonGrid mapGrid = registry.ctx().get<const DungeonGrid>(MINIMAP_REG_NAME);
+
+	entt::entity playerEnt = registry.view<TransformComponent, Player::Status>().front();
+	Vector2 playerPos = registry.get<TransformComponent>(playerEnt).position;
+	playerPos = Vector2Scale(playerPos, 1.f / TILE_SIZE);
+
+	return mapGrid[playerPos.y][playerPos.x] == C_STAIR;
+}
+
 void Game::handleEvents() {
 	Player::HandleInput(registry);
 
-	if (IsKeyPressed(KEY_C)) {
-		Player::Create(registry);
+	if (CheckPlayerAtStair()) {
 		ClearDungeon();
-		CreateDungeon("Lmao", 1);
+		CreateDungeon(dungeonDifficulty++);
 	}
 	if (IsKeyPressed(KEY_M)) {
 		minimapFullscreen = !minimapFullscreen;
@@ -71,7 +92,7 @@ void Game::UpdateMinimap() {
 	registry.ctx().insert_or_assign(MINIMAP_REG_NAME, mapGrid);
 }
 void Game::update() {
-	//TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
+	TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
 	Player::Update(registry);
 	UpdateMinimap();
 }
@@ -88,53 +109,36 @@ void Game::RenderMinimap() {
 	Vector2 playerPos = registry.get<TransformComponent>(playerEnt).position;
 	playerPos = Vector2Scale(playerPos, 1.f / TILE_SIZE);
 
-	if (!minimapFullscreen) {
-		for (int y = 0; y < 2 * MINIMAP_RADIUS; y++) {
-			for (int x = 0; x < 2 * MINIMAP_RADIUS; x++) {
-				if (playerPos.x - MINIMAP_RADIUS + x < 0 || playerPos.x - MINIMAP_RADIUS + x >= mapGrid[0].size())
-					continue;
-				if (playerPos.y - MINIMAP_RADIUS + y < 0 || playerPos.y - MINIMAP_RADIUS + y >= mapGrid.size())
-					continue;
-
-				auto currCell = mapGrid[playerPos.y - MINIMAP_RADIUS + y][playerPos.x - MINIMAP_RADIUS + x];
-				if (DUNGEON_CELL_COLOR.find(currCell) != DUNGEON_CELL_COLOR.end()) {
-					auto color = DUNGEON_CELL_COLOR.at(currCell);
-					DrawRectangle(x * minimapPixelSize, y * minimapPixelSize,
-						minimapPixelSize, minimapPixelSize, color);
-				}
-			}
-		}
-		//Draw player on map
-		DrawRectangle(MINIMAP_RADIUS * minimapPixelSize, MINIMAP_RADIUS * minimapPixelSize,
-			minimapPixelSize, minimapPixelSize, GREEN);
-	}
-	else {
+	if (minimapFullscreen) {
 		ClearBackground(BLACK);
 		minimapPixelSize *= 2;
-		int rad = SCREEN_SIZE / minimapPixelSize / 2;
-		for (int y = 0; y < rad * 2; y++) {
-			for (int x = 0; x < rad * 2; x++) {
-				if (playerPos.x - rad + x < 0 || playerPos.x - rad + x >= mapGrid[0].size())
-					continue;
-				if (playerPos.y - rad + y < 0 || playerPos.y - rad + y >= mapGrid.size())
-					continue;
+	}
+	int rad = minimapFullscreen ? SCREEN_SIZE / minimapPixelSize / 2 : MINIMAP_RADIUS;
 
-				auto currCell = mapGrid[playerPos.y - rad + y][playerPos.x - rad + x];
-				if (DUNGEON_CELL_COLOR.find(currCell) != DUNGEON_CELL_COLOR.end()) {
-					auto color = DUNGEON_CELL_COLOR.at(currCell);
-					DrawRectangleV(
-						Vector2Add({ x * minimapPixelSize, y * minimapPixelSize }, minimapFullscreenOffset),
-						{ minimapPixelSize, minimapPixelSize },
-						color);
-				}
+	
+	for (int y = 0; y < rad * 2; y++) {
+		for (int x = 0; x < rad * 2; x++) {
+			if (playerPos.x - rad + x < 0 || playerPos.x - rad + x >= mapGrid[0].size())
+				continue;
+			if (playerPos.y - rad + y < 0 || playerPos.y - rad + y >= mapGrid.size())
+				continue;
+
+			auto currCell = mapGrid[playerPos.y - rad + y][playerPos.x - rad + x];
+			if (DUNGEON_CELL_COLOR.find(currCell) != DUNGEON_CELL_COLOR.end()) {
+				auto color = DUNGEON_CELL_COLOR.at(currCell);
+				DrawRectangleV(
+					Vector2Add({ x * minimapPixelSize, y * minimapPixelSize }, minimapFullscreenOffset),
+					{ minimapPixelSize, minimapPixelSize },
+					color);
 			}
 		}
-		//Draw player on map
-		DrawRectangleV(
-			Vector2Add({ SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f }, minimapFullscreenOffset),
-			{ minimapPixelSize, minimapPixelSize },
-		GREEN);
 	}
+	//Draw player on map
+	DrawRectangleV(
+		Vector2Add({ rad * minimapPixelSize, rad * minimapPixelSize }, minimapFullscreenOffset),
+		{ minimapPixelSize, minimapPixelSize },
+	GREEN);
+	
 }
 
 void Game::RenderTextureComponents() {
@@ -165,11 +169,10 @@ void Game::render() {
 	EndDrawing();
 }
 
-
-void Game::CreateDungeon(const std::string seed, int difficulty) {
+void Game::CreateDungeon(int difficulty, const std::string seed) {
 	pcg32 rng(GetRandomSeed());
 	DungeonGenerateData data = {
-		.seed = seed,
+		.seed = (seed == "") ? std::to_string(GetRandomSeed()) : seed,
 		.width = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (difficulty + 1), true),
 		.height = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (difficulty + 1), true),
 		.roomAmount = MINIMUM_ROOM_AMOUNT * difficulty
