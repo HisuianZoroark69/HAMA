@@ -129,7 +129,6 @@ void Player::HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, V
 
 void Player::HandleInput(entt::registry& registry)
 {
-	//Todo: add fast movement by holding shift
 	auto playerView = registry.view<TransformComponent, TextureComponent, Status>();
 	for (auto [player, transform, texture, status] : playerView.each()) {
 		status.isSprinting = IsKeyDown(KEY_LEFT_SHIFT);

@@ -7,8 +7,6 @@
 
 //Todo: Add game states such as menu and stuffs
 
-//Todo: Add minimap
-
 
 
 Game::Game(const char* title, int width, int height) {
@@ -92,7 +90,7 @@ void Game::UpdateMinimap() {
 	registry.ctx().insert_or_assign(MINIMAP_REG_NAME, mapGrid);
 }
 void Game::update() {
-	TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
+	//TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
 	Player::Update(registry);
 	UpdateMinimap();
 }
@@ -113,8 +111,9 @@ void Game::RenderMinimap() {
 		ClearBackground(BLACK);
 		minimapPixelSize *= 2;
 	}
-	int rad = minimapFullscreen ? SCREEN_SIZE / minimapPixelSize / 2 : MINIMAP_RADIUS;
-
+	int extra = minimapFullscreen ? std::max(mapGrid.size(), mapGrid[0].size()) * minimapPixelSize : 0;
+	int rad = minimapFullscreen ? (SCREEN_SIZE + extra) / minimapPixelSize / 2 : MINIMAP_RADIUS;
+	Vector2 minimapMidOffset = Vector2AddValue(minimapFullscreenOffset, -extra / 2);
 	
 	for (int y = 0; y < rad * 2; y++) {
 		for (int x = 0; x < rad * 2; x++) {
@@ -127,7 +126,7 @@ void Game::RenderMinimap() {
 			if (DUNGEON_CELL_COLOR.find(currCell) != DUNGEON_CELL_COLOR.end()) {
 				auto color = DUNGEON_CELL_COLOR.at(currCell);
 				DrawRectangleV(
-					Vector2Add({ x * minimapPixelSize, y * minimapPixelSize }, minimapFullscreenOffset),
+					Vector2Add({ x * minimapPixelSize, y * minimapPixelSize }, minimapMidOffset),
 					{ minimapPixelSize, minimapPixelSize },
 					color);
 			}
@@ -135,7 +134,7 @@ void Game::RenderMinimap() {
 	}
 	//Draw player on map
 	DrawRectangleV(
-		Vector2Add({ rad * minimapPixelSize, rad * minimapPixelSize }, minimapFullscreenOffset),
+		Vector2Add({ rad * minimapPixelSize, rad * minimapPixelSize }, minimapMidOffset),
 		{ minimapPixelSize, minimapPixelSize },
 	GREEN);
 	
@@ -182,8 +181,8 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 	pcg32 rng(GetRandomSeed());
 	DungeonGenerateData data = {
 		.seed = (seed == "") ? std::to_string(GetRandomSeed()) : seed,
-		.width = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (difficulty + 1), true),
-		.height = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (difficulty + 1), true),
+		.width = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (std::sqrt(difficulty) + 1) , true),
+		.height = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (std::sqrt(difficulty + 1) + 1), true),
 		.roomAmount = MINIMUM_ROOM_AMOUNT * difficulty
 	};
 

@@ -50,7 +50,7 @@ private:
 	inline static const std::string TEXTURE_DUNGEON_CORR = "Dungeon_Corr";
 	inline static const std::string TEXTURE_DUNGEON_ROOM = "Dungeon_Room";
 
-	inline static const std::map<int, Color> DUNGEON_CELL_COLOR = { {C_WALL, WHITE}, {C_STAIR, BLUE} };
+	inline static const std::map<int, Color> DUNGEON_CELL_COLOR = { {C_WALL, WHITE}, { C_ROOM, GRAY }, {C_STAIR, BLUE} };
 
 
 	bool IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame);
