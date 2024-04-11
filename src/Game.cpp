@@ -1,5 +1,8 @@
 #include <raylib.h>
 
+#define RAYGUI_IMPLEMENTATION
+#include <raygui.h>
+
 #include "Player.h"
 #include "TextureLoader.h"
 #include "Game.h"
@@ -15,7 +18,7 @@ Game::Game(const char* title, int width, int height) {
 	registry.ctx().emplace<Camera2D>(Camera2D{ .zoom = 1.f});
 	TextureLoader::LoadTextureFromJson("resource/textures.json");
 
-	GameStart();
+	currentState = MENU;
 }
 
 Game::~Game() {
@@ -31,12 +34,18 @@ bool Game::IsTextureOnScreen(const Camera2D& camera, const Vector2& position, co
 	if (currScrPos.y > SCREEN_SIZE) return false;     //Bottom border
 	return true;
 }
-
+void Game::GameMenu() {
+	currentState = MENU;
+}
 void Game::GameStart() {
+	currentState = RUNNING;
 	Player::Create(registry);
 	ClearDungeon();
-	dungeonDifficulty = 5;
+	dungeonDifficulty = 1;
 	CreateDungeon(dungeonDifficulty++);
+}
+void Game::GameEnd() {
+	currentState = OVER;
 }
 
 bool Game::CheckPlayerAtStair() {
@@ -67,6 +76,7 @@ void Game::handleEvents() {
 		minimapFullscreenOffset = Vector2Add(minimapFullscreenOffset, GetMouseDelta());
 	}
 }
+
 void Game::UpdateMinimap() {
 	if (!registry.ctx().contains<DungeonGrid>(MINIMAP_REG_NAME))
 		return;
@@ -89,10 +99,20 @@ void Game::UpdateMinimap() {
 
 	registry.ctx().insert_or_assign(MINIMAP_REG_NAME, mapGrid);
 }
+
 void Game::update() {
 	//TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
 	Player::Update(registry);
 	UpdateMinimap();
+}
+
+void Game::RenderMainMenu() {
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
+	
+	//Game start button
+	if (GuiButton({ 320 - 50,320 - 25, 100, 50}, "Start")) {
+		GameStart();
+	}
 }
 
 void Game::RenderMinimap() {
@@ -171,8 +191,16 @@ void Game::render() {
 	BeginDrawing();
 	ClearBackground(BLACK);
 	
-	RenderTextureComponents();
-	RenderMinimap();
+	switch (currentState) {
+	case MENU:
+		RenderMainMenu();
+		break;
+	case RUNNING:
+		RenderTextureComponents();
+		RenderMinimap();
+		break;
+	}
+	
 
 	EndDrawing();
 }
@@ -181,8 +209,8 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 	pcg32 rng(GetRandomSeed());
 	DungeonGenerateData data = {
 		.seed = (seed == "") ? std::to_string(GetRandomSeed()) : seed,
-		.width = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (std::sqrt(difficulty) + 1) , true),
-		.height = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (std::sqrt(difficulty + 1) + 1), true),
+		.width = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (std::sqrt(difficulty + 1) + 1)),
+		.height = GetRandomOddNumber(rng, MINIMUM_DUNGEON_SIZE, MINIMUM_DUNGEON_SIZE * (std::sqrt(difficulty + 1) + 1)),
 		.roomAmount = MINIMUM_ROOM_AMOUNT * difficulty
 	};
 

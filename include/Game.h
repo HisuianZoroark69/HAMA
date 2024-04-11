@@ -51,12 +51,17 @@ private:
 	inline static const std::string TEXTURE_DUNGEON_ROOM = "Dungeon_Room";
 
 	inline static const std::map<int, Color> DUNGEON_CELL_COLOR = { {C_WALL, WHITE}, { C_ROOM, GRAY }, {C_STAIR, BLUE} };
-
+	
+	enum GameState {MENU, PAUSE, RUNNING, OVER};
+	GameState currentState;
 
 	bool IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame);
+	void GameMenu();
 	void GameStart();
+	void GameEnd();
 	bool CheckPlayerAtStair();
 	void UpdateMinimap();
+	void RenderMainMenu();
 	void RenderMinimap();
 	void RenderTextureComponents();
 	void CreateDungeon(int difficulty, const std::string seed = "");

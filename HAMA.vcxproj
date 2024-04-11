@@ -167,6 +167,7 @@
     <ClInclude Include="include\PCG\pcg_uint128.hpp" />
     <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\TextureLoader.h" />
+    <ClInclude Include="include\raygui.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resource\Dungeon.png" />
