@@ -3,7 +3,7 @@
   "textures": [
     {
       "name": "Player_Idle",
-      "file": "resource/Player.png",
+      "file": "resource/1.png",
       "layer": "Player",
       "frames": [
         {
@@ -71,7 +71,7 @@
     },
     {
       "name": "Dungeon_Wall",
-      "file": "resource/Dungeon.png",
+      "file": "resource/ice wall.png",
       "layer": "Dungeon",
       "frames": [
         {
@@ -86,12 +86,12 @@
     },
     {
       "name": "Dungeon_Room",
-      "file": "resource/Dungeon.png",
+      "file": "resource/snow.png",
       "layer": "Dungeon",
       "frames": [
         {
           "rect": {
-            "x": 64,
+            "x": 0,
             "y": 0,
             "width": 64,
             "height": 64
@@ -101,12 +101,12 @@
     },
     {
       "name": "Dungeon_Corr",
-      "file": "resource/Dungeon.png",
+      "file": "resource/snow.png",
       "layer": "Dungeon",
       "frames": [
         {
           "rect": {
-            "x": 128,
+            "x": 0,
             "y": 0,
             "width": 64,
             "height": 64
@@ -125,6 +125,36 @@
             "y": 0,
             "width": 4,
             "height": 4
+          }
+        }
+      ]
+    },
+    {
+      "name": "Apple",
+      "file": "resource/Items.png",
+      "layer": "Item",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Big Apple",
+      "file": "resource/Items.png",
+      "layer": "Item",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 64,
+            "width": 64,
+            "height": 64
           }
         }
       ]

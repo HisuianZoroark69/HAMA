@@ -15,13 +15,14 @@ using entt::operator"" _hs;
  * @brief Render layer enum
  * @var RenderLayers::ENUM_END Used to get the layer size for rendering
  */
-enum RenderLayer {Background, Dungeon, Player, GUI, Minimap, ENUM_END };
+enum RenderLayer {Background, Dungeon, Item, Player, GUI, Minimap, ENUM_END };
 NLOHMANN_JSON_SERIALIZE_ENUM(RenderLayer, {
 	{Background, "Background"},
 	{Dungeon, "Dungeon"},
 	{Player, "Player"},
 	{GUI, "GUI"},
-	{Minimap, "Minimap"}
+	{Minimap, "Minimap"},
+	{Item, "Item"}
 })
 	
 const std::set<int> GUILayers = { GUI };

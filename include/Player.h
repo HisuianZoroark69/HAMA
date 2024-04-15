@@ -3,22 +3,22 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <entt\entt.hpp>
-#include <DungeonGenerator.h>
 
+#include "DungeonGenerator.h"
 #include "Auxiliaries.h"
-
+#include "Item.h"
+/**
+* @struct PlayerStatus
+* @brief Player statuses
+*/
+struct PlayerStatus {
+	int HP = 0;
+	Direction movingDirection = { 0,0 };
+	bool isSprinting = false;
+	int hunger = 100;
+	//std::vector<ItemID> items;
+};
 struct Player {
-	/**
-	* @struct Status
-	* @brief Player statuses
-	*/
-	struct Status {
-		int HP = 0;
-		Direction movingDirection = { 0,0 };
-		bool isSprinting = false;
-	};
-
-
 	/**
 	 * @brief Create a player
 	 * @param registry The ECS registry
@@ -41,7 +41,7 @@ struct Player {
 	/**
 	 * @brief Update
 	 */
-	static void Update(entt::registry& registry);
+	static void Update(entt::entity& player, entt::registry& registry);
 
 private:
 	inline static const std::string TEXTURE_IDLE = "Player_Idle";

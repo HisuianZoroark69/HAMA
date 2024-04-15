@@ -42,6 +42,8 @@ private:
 	 * @brief Main Entity Component System (ECS) manager
 	 */
 	entt::registry registry;
+	entt::entity player;
+
 	bool minimapFullscreen;
 	Vector2 minimapFullscreenOffset;
 	int dungeonDifficulty = 5;
@@ -54,6 +56,8 @@ private:
 	
 	enum GameState {MENU, PAUSE, RUNNING, OVER};
 	GameState currentState;
+
+
 
 	bool IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame);
 	void GameMenu();

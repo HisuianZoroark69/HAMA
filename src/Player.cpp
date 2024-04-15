@@ -5,7 +5,7 @@
 entt::entity Player::Create(entt::registry& registry)
 {
 	entt::entity entity = registry.create();
-	registry.emplace<Player::Status>(entity, 100);
+	registry.emplace<PlayerStatus>(entity, 100);
 	registry.emplace<TransformComponent>(entity, Vector2{ 64 , 64 }, Direction{0,0});
 	registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_IDLE));
 	return entity;
@@ -68,21 +68,27 @@ void Player::UpdateCameraPosition(const Vector2& position, entt::registry& regis
 	registry.ctx().insert_or_assign(camera);
 }
 
-void Player::Update(entt::registry& registry)
+void Player::Update(entt::entity& player, entt::registry& registry)
 {
-	auto playerView = registry.view< TransformComponent, TextureComponent, Status>();
-
-	for (auto [player, transform, texture, status] : playerView.each()) {
-		if (status.HP <= 0) {
-			registry.destroy(player);
-		}
-
-		//Update camera position
-		UpdateCameraPosition(transform.position, registry);
-
-		transform.orientation = status.movingDirection;
-		ClampMovementInTile(transform.position, status.movingDirection, status.isSprinting);
+	if (!registry.valid(player)) return;
+	auto [status, transform, texture] = registry.get<PlayerStatus, TransformComponent, TextureComponent>(player);
+	if (status.HP <= 0) {
+		registry.destroy(player);
 	}
+
+	//Update camera position
+	UpdateCameraPosition(transform.position, registry);
+
+	transform.orientation = status.movingDirection;
+	ClampMovementInTile(transform.position, status.movingDirection, status.isSprinting);
+
+	/*auto itemView = registry.view<ItemID, TransformComponent>();
+	for (auto [itemEnt, item, itemTransform] : itemView.each()) {
+		if (transform.position.x == itemTransform.position.x && transform.position.y == itemTransform.position.y) {
+			status.items.push_back(item);
+			registry.destroy(itemEnt);
+		}
+	}*/
 }
 
 bool Player::HandleInputDirection(Vector2& movingDirection) {
@@ -129,7 +135,7 @@ void Player::HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, V
 
 void Player::HandleInput(entt::registry& registry)
 {
-	auto playerView = registry.view<TransformComponent, TextureComponent, Status>();
+	auto playerView = registry.view<TransformComponent, TextureComponent, PlayerStatus>();
 	for (auto [player, transform, texture, status] : playerView.each()) {
 		status.isSprinting = IsKeyDown(KEY_LEFT_SHIFT);
 

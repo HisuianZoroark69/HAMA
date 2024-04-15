@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "TextureLoader.h"
 #include "Game.h"
+#include "Item.h"
 
 
 //Todo: Add game states such as menu and stuffs
@@ -39,7 +40,7 @@ void Game::GameMenu() {
 }
 void Game::GameStart() {
 	currentState = RUNNING;
-	Player::Create(registry);
+	player = Player::Create(registry);
 	ClearDungeon();
 	dungeonDifficulty = 1;
 	CreateDungeon(dungeonDifficulty++);
@@ -54,7 +55,7 @@ bool Game::CheckPlayerAtStair() {
 
 	const DungeonGrid mapGrid = registry.ctx().get<const DungeonGrid>(MINIMAP_REG_NAME);
 
-	entt::entity playerEnt = registry.view<TransformComponent, Player::Status>().front();
+	entt::entity playerEnt = registry.view<TransformComponent, PlayerStatus>().front();
 	Vector2 playerPos = registry.get<TransformComponent>(playerEnt).position;
 	playerPos = Vector2Scale(playerPos, 1.f / TILE_SIZE);
 
@@ -102,7 +103,7 @@ void Game::UpdateMinimap() {
 
 void Game::update() {
 	//TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
-	Player::Update(registry);
+	Player::Update(player, registry);
 	UpdateMinimap();
 }
 
@@ -123,7 +124,7 @@ void Game::RenderMinimap() {
 	int minimapSize = SCREEN_SIZE / TILE_SIZE * minimapPixelSize;
 	DungeonGrid mapGrid = registry.ctx().get<DungeonGrid>(MINIMAP_REG_NAME);
 
-	entt::entity playerEnt = registry.view<TransformComponent, Player::Status>().front();
+	entt::entity playerEnt = registry.view<TransformComponent, PlayerStatus>().front();
 	Vector2 playerPos = registry.get<TransformComponent>(playerEnt).position;
 	playerPos = Vector2Scale(playerPos, 1.f / TILE_SIZE);
 
@@ -219,7 +220,7 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 	DungeonGrid dungeonGrid = dg.Generate(data, spawnPos);
 
 	//Make players spawn at designated position
-	auto players = registry.view<TransformComponent, Player::Status>().each();
+	auto players = registry.view<TransformComponent, PlayerStatus>().each();
 	for (auto [entity, transform, status] : players) {
 		transform.position.x = spawnPos.first * TILE_SIZE;
 		transform.position.y = spawnPos.second * TILE_SIZE;
@@ -251,6 +252,13 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 		}
 	}
 
+	/*auto itemList = GenerateItems(rng, dungeonGrid, 5);
+	for (auto item : itemList) {
+		auto entity = registry.create();
+		registry.emplace<TransformComponent>(entity, Vector2Scale(item.first, TILE_SIZE), Direction{0,0});
+		registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(item.second));
+		registry.emplace<ItemID>(entity, item.second);
+	}*/
 
 }
 
@@ -258,7 +266,7 @@ void Game::ClearDungeon() {
 	registry.ctx().erase<DungeonGrid>(DUNGEON_REG_NAME);
 	registry.ctx().erase<DungeonGrid>(MINIMAP_REG_NAME);
 	for (auto [entity, texture] : registry.view<TextureComponent>().each()) {
-		if (texture.targetLayer == RenderLayer::Dungeon) {
+		if (texture.targetLayer == RenderLayer::Dungeon || texture.targetLayer == RenderLayer::Item) {
 			registry.destroy(entity);
 		}
 	}
