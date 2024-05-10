@@ -6,7 +6,6 @@
 
 #include "DungeonGenerator.h"
 #include "Auxiliaries.h"
-#include "Item.h"
 /**
 * @struct PlayerStatus
 * @brief Player statuses

@@ -6,7 +6,6 @@
 #include "Player.h"
 #include "TextureLoader.h"
 #include "Game.h"
-#include "Item.h"
 
 
 //Todo: Add game states such as menu and stuffs
@@ -16,6 +15,7 @@
 Game::Game(const char* title, int width, int height) {
 	InitWindow(width, height, title);
 	SetTargetFPS(FPS);
+	SetExitKey(KEY_NULL);
 	registry.ctx().emplace<Camera2D>(Camera2D{ .zoom = 1.f});
 	TextureLoader::LoadTextureFromJson("resource/textures.json");
 
@@ -66,6 +66,10 @@ void Game::handleEvents() {
 	Player::HandleInput(registry);
 
 	if (CheckPlayerAtStair()) {
+		if (dungeonDifficulty >= 1) {
+			currentState = OVER;
+			return;
+		}
 		ClearDungeon();
 		CreateDungeon(dungeonDifficulty++);
 	}
@@ -112,6 +116,15 @@ void Game::RenderMainMenu() {
 	
 	//Game start button
 	if (GuiButton({ 320 - 50,320 - 25, 100, 50}, "Start")) {
+		GameStart();
+	}
+}
+void Game::RenderGameOver() {
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
+
+	DrawText("Game Over", 170, 120, 60, WHITE);
+	//Game start button
+	if (GuiButton({ 320 - 150/2,320 - 25, 150, 50 }, "Play Again")) {
 		GameStart();
 	}
 }
@@ -199,6 +212,9 @@ void Game::render() {
 	case RUNNING:
 		RenderTextureComponents();
 		RenderMinimap();
+		break;
+	case OVER:
+		RenderGameOver();
 		break;
 	}
 	

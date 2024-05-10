@@ -66,6 +66,7 @@ private:
 	bool CheckPlayerAtStair();
 	void UpdateMinimap();
 	void RenderMainMenu();
+	void RenderGameOver();
 	void RenderMinimap();
 	void RenderTextureComponents();
 	void CreateDungeon(int difficulty, const std::string seed = "");

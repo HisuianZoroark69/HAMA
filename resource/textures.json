@@ -3,7 +3,7 @@
   "textures": [
     {
       "name": "Player_Idle",
-      "file": "resource/1.png",
+      "file": "resource/Player.png",
       "layer": "Player",
       "frames": [
         {
