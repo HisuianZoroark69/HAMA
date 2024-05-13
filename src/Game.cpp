@@ -191,7 +191,7 @@ void Game::RenderHungerBar() {
 	else HungerColor = GREEN;
 	DrawRectangle(0, 70, stat.hunger, 10, HungerColor);
 
-	DrawText(TextFormat("%0.0f", stat.hunger), 105, 70, 20, BLACK);
+	DrawText(TextFormat("%0.0f", stat.hunger), 105, 68, 20, BLACK);
 	DrawText(TextFormat("Apples: %d", stat.apples), 0, 90, 20, BLACK);
 	DrawText(TextFormat("%dF", dungeonDifficulty - 1), 0, 110, 20, BLACK);
 }
@@ -269,7 +269,7 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 	registry.ctx().emplace_as<DungeonGrid>(MINIMAP_REG_NAME, 
 		DungeonGrid(dungeonGrid.size(), std::vector<int>(dungeonGrid[0].size(), 0)
 	));
-
+	int season = GetRandomNumber(rng, 0, 2);
 	for (float y = 0; y < dungeonGrid.size(); y++) {
 		for (float x = 0; x < dungeonGrid[y].size(); x++) {
 			auto entity = registry.create();
@@ -278,13 +278,13 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 			switch (dungeonGrid[y][x]) {
 			case C_CORR:
 			case C_DOOR:
-				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_CORR));
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_CORR[season]));
 				break;
 			case C_WALL:
-				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_WALL));
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_WALL[season]));
 				break;
 			case C_ROOM:
-				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_ROOM));
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_ROOM[season]));
 				break;
 			}
 		}

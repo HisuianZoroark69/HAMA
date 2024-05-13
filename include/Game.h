@@ -50,9 +50,9 @@ private:
 	Vector2 minimapFullscreenOffset;
 	int dungeonDifficulty = 5;
 
-	inline static const std::string TEXTURE_DUNGEON_WALL = "Dungeon_Wall";
-	inline static const std::string TEXTURE_DUNGEON_CORR = "Dungeon_Corr";
-	inline static const std::string TEXTURE_DUNGEON_ROOM = "Dungeon_Room";
+	inline static const std::array<std::string, 3> TEXTURE_DUNGEON_WALL = { "Dungeon_Wall_Spring", "Dungeon_Wall_Autumn", "Dungeon_Wall_Winter"};
+	inline static const std::array<std::string, 3> TEXTURE_DUNGEON_CORR = { "Dungeon_Corr_Spring", "Dungeon_Corr_Autumn", "Dungeon_Corr_Winter" };
+	inline static const std::array<std::string, 3> TEXTURE_DUNGEON_ROOM = { "Dungeon_Room_Spring", "Dungeon_Room_Autumn", "Dungeon_Room_Winter" };
 
 	inline static const std::map<int, Color> DUNGEON_CELL_COLOR = { {C_WALL, WHITE}, { C_ROOM, GRAY }, {C_STAIR, BLUE} };
 	

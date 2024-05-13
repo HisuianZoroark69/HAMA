@@ -7,7 +7,7 @@
       "layer": "Player",
       "frames": [
         {
-          "duration": 20,
+          "duration": 15,
           "rect": {
             "x": 0,
             "y": 0,
@@ -16,7 +16,7 @@
           }
         },
         {
-          "duration": 20,
+          "duration": 15,
           "rect": {
             "x": 64,
             "y": 0,
@@ -25,9 +25,18 @@
           }
         },
         {
-          "duration": 20,
+          "duration": 15,
           "rect": {
             "x": 128,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        },
+        {
+          "duration": 15,
+          "rect": {
+            "x": 64,
             "y": 0,
             "width": 64,
             "height": 64
@@ -41,28 +50,37 @@
       "layer": "Player",
       "frames": [
         {
-          "duration": 5,
+          "duration": 15,
           "rect": {
             "x": 0,
-            "y": 64,
+            "y": 0,
             "width": 64,
             "height": 64
           }
         },
         {
-          "duration": 5,
+          "duration": 15,
           "rect": {
             "x": 64,
-            "y": 64,
+            "y": 0,
             "width": 64,
             "height": 64
           }
         },
         {
-          "duration": 5,
+          "duration": 15,
           "rect": {
             "x": 128,
-            "y": 64,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        },
+        {
+          "duration": 15,
+          "rect": {
+            "x": 64,
+            "y": 0,
             "width": 64,
             "height": 64
           }
@@ -70,7 +88,7 @@
       ]
     },
     {
-      "name": "Dungeon_Wall",
+      "name": "Dungeon_Wall_Winter",
       "file": "resource/ice wall.png",
       "layer": "Dungeon",
       "frames": [
@@ -85,7 +103,7 @@
       ]
     },
     {
-      "name": "Dungeon_Room",
+      "name": "Dungeon_Room_Winter",
       "file": "resource/snow.png",
       "layer": "Dungeon",
       "frames": [
@@ -100,8 +118,98 @@
       ]
     },
     {
-      "name": "Dungeon_Corr",
+      "name": "Dungeon_Corr_Winter",
       "file": "resource/snow.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dungeon_Wall_Spring",
+      "file": "resource/spring wall.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dungeon_Room_Spring",
+      "file": "resource/grass 1.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dungeon_Corr_Spring",
+      "file": "resource/grass 1.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dungeon_Wall_Autumn",
+      "file": "resource/autumn wall.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dungeon_Room_Autumn",
+      "file": "resource/grass 2.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dungeon_Corr_Autumn",
+      "file": "resource/grass 2.png",
       "layer": "Dungeon",
       "frames": [
         {
