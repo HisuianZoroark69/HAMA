@@ -6,6 +6,10 @@
 
 #include "DungeonGenerator.h"
 #include "Auxiliaries.h"
+
+constexpr int APPLE_RECOVERY_AMOUNT = 20;
+constexpr float BASE_HUNGER_CONSUMPTION_PER_TILE = 0.08;
+
 /**
 * @struct PlayerStatus
 * @brief Player statuses
@@ -14,8 +18,9 @@ struct PlayerStatus {
 	int HP = 0;
 	Direction movingDirection = { 0,0 };
 	bool isSprinting = false;
-	int hunger = 100;
-	//std::vector<ItemID> items;
+	float hungerConsumePerTile = BASE_HUNGER_CONSUMPTION_PER_TILE;
+	float hunger = 100;
+	int apples = 0;
 };
 struct Player {
 	/**
@@ -50,5 +55,5 @@ private:
 	static void ChangeTexture(TextureComponent& oldTexture, TextureComponent newTexture);
 	static void UpdateCameraPosition(const Vector2& position, entt::registry& registry);
 	static bool HandleInputDirection(Vector2& movingDirection);
-	static void HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, Vector2& movingDirection);
+	static bool HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, Vector2& movingDirection);
 };

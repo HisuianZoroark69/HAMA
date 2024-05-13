@@ -38,6 +38,7 @@ constexpr auto MINIMAP_RADIUS = 8; //Tiles
 
 constexpr auto DUNGEON_REG_NAME = "dungeon"_hs;
 constexpr auto MINIMAP_REG_NAME = "minimap"_hs;
+constexpr auto ITEM_LIST_REG_NAME = "itemList"_hs;
 
 /**
  * @brief Direction -> vector2

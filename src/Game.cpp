@@ -7,11 +7,6 @@
 #include "TextureLoader.h"
 #include "Game.h"
 
-
-//Todo: Add game states such as menu and stuffs
-
-
-
 Game::Game(const char* title, int width, int height) {
 	InitWindow(width, height, title);
 	SetTargetFPS(FPS);
@@ -63,22 +58,26 @@ bool Game::CheckPlayerAtStair() {
 }
 
 void Game::handleEvents() {
-	Player::HandleInput(registry);
-
-	if (CheckPlayerAtStair()) {
-		if (dungeonDifficulty >= 1) {
-			currentState = OVER;
-			return;
+	switch (currentState)
+	{
+	case Game::RUNNING:
+		Player::HandleInput(registry);
+		if (CheckPlayerAtStair()) {
+			if (dungeonDifficulty > LEVELS) {
+				currentState = OVER;
+				return;
+			}
+			ClearDungeon();
+			CreateDungeon(dungeonDifficulty++);
 		}
-		ClearDungeon();
-		CreateDungeon(dungeonDifficulty++);
-	}
-	if (IsKeyPressed(KEY_M)) {
-		minimapFullscreen = !minimapFullscreen;
-		minimapFullscreenOffset = Vector2Zero();
-	}
-	if (minimapFullscreen && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-		minimapFullscreenOffset = Vector2Add(minimapFullscreenOffset, GetMouseDelta());
+		if (IsKeyPressed(KEY_M)) {
+			minimapFullscreen = !minimapFullscreen;
+			minimapFullscreenOffset = Vector2Zero();
+		}
+		if (minimapFullscreen && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+			minimapFullscreenOffset = Vector2Add(minimapFullscreenOffset, GetMouseDelta());
+		}
+		break;
 	}
 }
 
@@ -107,13 +106,21 @@ void Game::UpdateMinimap() {
 
 void Game::update() {
 	//TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
-	Player::Update(player, registry);
-	UpdateMinimap();
+	switch (currentState) {
+	case RUNNING:
+		Player::Update(player, registry);
+		if (!registry.valid(player) && currentState == RUNNING) {
+			GameEnd();
+			break;
+		}
+		UpdateMinimap();
+		break;
+	}
 }
 
 void Game::RenderMainMenu() {
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
-	
+	DrawText("Haki and Miyeon\n\n\n\n\t\tadventure", 90, 120, 60, WHITE);
 	//Game start button
 	if (GuiButton({ 320 - 50,320 - 25, 100, 50}, "Start")) {
 		GameStart();
@@ -137,8 +144,7 @@ void Game::RenderMinimap() {
 	int minimapSize = SCREEN_SIZE / TILE_SIZE * minimapPixelSize;
 	DungeonGrid mapGrid = registry.ctx().get<DungeonGrid>(MINIMAP_REG_NAME);
 
-	entt::entity playerEnt = registry.view<TransformComponent, PlayerStatus>().front();
-	Vector2 playerPos = registry.get<TransformComponent>(playerEnt).position;
+	Vector2 playerPos = registry.get<TransformComponent>(player).position;
 	playerPos = Vector2Scale(playerPos, 1.f / TILE_SIZE);
 
 	if (minimapFullscreen) {
@@ -172,6 +178,22 @@ void Game::RenderMinimap() {
 		{ minimapPixelSize, minimapPixelSize },
 	GREEN);
 	
+}
+
+void Game::RenderHungerBar() {
+	if (minimapFullscreen) return;
+
+	PlayerStatus stat = registry.get<PlayerStatus>(player);
+	DrawRectangleLinesEx({ 0, 70, 100, 10}, 2, BLACK);
+	Color HungerColor;
+	if (stat.hunger <= 15) HungerColor = RED;
+	else if (stat.hunger <= 30) HungerColor = YELLOW;
+	else HungerColor = GREEN;
+	DrawRectangle(0, 70, stat.hunger, 10, HungerColor);
+
+	DrawText(TextFormat("%0.0f", stat.hunger), 105, 70, 20, BLACK);
+	DrawText(TextFormat("Apples: %d", stat.apples), 0, 90, 20, BLACK);
+	DrawText(TextFormat("%dF", dungeonDifficulty - 1), 0, 110, 20, BLACK);
 }
 
 void Game::RenderTextureComponents() {
@@ -212,13 +234,13 @@ void Game::render() {
 	case RUNNING:
 		RenderTextureComponents();
 		RenderMinimap();
+		RenderHungerBar();
 		break;
 	case OVER:
 		RenderGameOver();
 		break;
 	}
 	
-
 	EndDrawing();
 }
 
@@ -268,19 +290,30 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 		}
 	}
 
-	/*auto itemList = GenerateItems(rng, dungeonGrid, 5);
-	for (auto item : itemList) {
+	//Create items
+	std::vector<std::pair<Vector2, entt::entity>> itemList;
+	auto itemPosList = dg.GenerateApplesPosition(rng, dungeonGrid, 0.07 * powf(2, -(difficulty - 1)));
+	for (auto itemPos : itemPosList) {
 		auto entity = registry.create();
-		registry.emplace<TransformComponent>(entity, Vector2Scale(item.first, TILE_SIZE), Direction{0,0});
-		registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(item.second));
-		registry.emplace<ItemID>(entity, item.second);
-	}*/
+		auto itemPosReal = Vector2{ static_cast<float>(itemPos.first), static_cast<float>(itemPos.second) };
 
+		itemPosReal = Vector2Scale(itemPosReal, TILE_SIZE);
+		registry.emplace<TransformComponent>(entity, itemPosReal, Direction{0,0});
+		registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture("Apple"));
+
+		itemList.push_back({ itemPosReal, entity });
+	}
+	registry.ctx().emplace_as<std::vector<std::pair<Vector2, entt::entity>>>(ITEM_LIST_REG_NAME, itemList);
+
+	//Change player's hunger consumption rate
+	registry.get<PlayerStatus>(player).hungerConsumePerTile = BASE_HUNGER_CONSUMPTION_PER_TILE * difficulty;
 }
 
 void Game::ClearDungeon() {
 	registry.ctx().erase<DungeonGrid>(DUNGEON_REG_NAME);
 	registry.ctx().erase<DungeonGrid>(MINIMAP_REG_NAME);
+	registry.ctx().erase<std::vector<std::pair<Vector2, entt::entity>>>(ITEM_LIST_REG_NAME);
+
 	for (auto [entity, texture] : registry.view<TextureComponent>().each()) {
 		if (texture.targetLayer == RenderLayer::Dungeon || texture.targetLayer == RenderLayer::Item) {
 			registry.destroy(entity);

@@ -268,6 +268,25 @@ void DungeonGenerator::GenerateStair(pcg32& rng, DungeonGrid& dg) {
     dg[stairPos.second][stairPos.first] = C_STAIR;
 }
 
+std::vector<std::pair<int, int>> DungeonGenerator::GenerateApplesPosition(pcg32& rng, const DungeonGrid& dg, const float rate)
+{
+    std::vector<std::pair<int, int>> ret;
+   
+    for (float y = 0; y < dg.size(); y++) {
+        for (float x = 0; x < dg[0].size(); x++) {
+            //Check if the current cell is a room
+            if (dg[y][x] == C_ROOM) {
+                //Check the rate
+                if (static_cast<float>(rng()) / rng.max() < rate) {
+                    ret.push_back({ x, y });
+                }
+            }
+        }
+    }
+
+    return ret;
+}
+
 DungeonGrid DungeonGenerator::Generate(const DungeonGenerateData& data, std::pair<int, int>& spawnPosition)
 {
     //# Variables

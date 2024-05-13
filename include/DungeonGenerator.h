@@ -39,6 +39,7 @@ struct DungeonGenerateData {
 class DungeonGenerator {
 public:
 	DungeonGrid Generate(const DungeonGenerateData& data, std::pair<int, int>& spawnPosition);
+	std::vector<std::pair<int, int>> GenerateApplesPosition(pcg32& rng, const DungeonGrid& dg, const float rate);
 private:
 
 	struct Room {
@@ -125,6 +126,4 @@ private:
 	std::vector<std::pair<int, int>> GetDeadends(const DungeonGrid& dg);
 
 	void GenerateStair(pcg32& rng, DungeonGrid& dg);
-
-
 };

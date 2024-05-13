@@ -72,7 +72,7 @@ void Player::Update(entt::entity& player, entt::registry& registry)
 {
 	if (!registry.valid(player)) return;
 	auto [status, transform, texture] = registry.get<PlayerStatus, TransformComponent, TextureComponent>(player);
-	if (status.HP <= 0) {
+	if (status.hunger <= 0) {
 		registry.destroy(player);
 	}
 
@@ -82,13 +82,16 @@ void Player::Update(entt::entity& player, entt::registry& registry)
 	transform.orientation = status.movingDirection;
 	ClampMovementInTile(transform.position, status.movingDirection, status.isSprinting);
 
-	/*auto itemView = registry.view<ItemID, TransformComponent>();
-	for (auto [itemEnt, item, itemTransform] : itemView.each()) {
-		if (transform.position.x == itemTransform.position.x && transform.position.y == itemTransform.position.y) {
-			status.items.push_back(item);
-			registry.destroy(itemEnt);
-		}
-	}*/
+	//Pick up items
+	auto &itemList = registry.ctx().get<std::vector<std::pair<Vector2, entt::entity>>>(ITEM_LIST_REG_NAME);
+	auto it = std::find_if(itemList.begin(), itemList.end(), [transform](std::pair<Vector2, entt::entity> a) {
+		return a.first.x == transform.position.x && a.first.y == transform.position.y;
+	});
+	if (it != itemList.end()) {
+		status.apples++;
+		registry.destroy(it->second);
+		itemList.erase(it);
+	}
 }
 
 bool Player::HandleInputDirection(Vector2& movingDirection) {
@@ -112,40 +115,55 @@ bool Player::HandleInputDirection(Vector2& movingDirection) {
 	return ret;
 }
 
-void Player::HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, Vector2& movingDirection) {
+bool Player::HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, Vector2& movingDirection) {
+	bool ret = true;
 	Vector2 posCur = Vector2Scale(position, 1.f / TILE_SIZE);
 	Vector2 posAfter = { posCur.x + movingDirection.x, posCur.y - movingDirection.y };
 	if (movingDirection.x != 0 && movingDirection.y != 0) {
 		if (dg[posAfter.y][posAfter.x] == C_WALL) {
+			ret = false;
 			movingDirection = Vector2Zero();
 			posAfter = posCur;
 		}
 	}
 	if (movingDirection.x != 0) {
 		if (dg[position.y / TILE_SIZE][posAfter.x] == C_WALL) {
+			ret = false;
 			movingDirection.x = 0;
 		}
 	}
 	if (movingDirection.y != 0) {
 		if (dg[posAfter.y][position.x / TILE_SIZE] == C_WALL) {
+			ret = false;
 			movingDirection.y = 0;
 		}
 	}
+	return ret;
 }
+
 
 void Player::HandleInput(entt::registry& registry)
 {
 	auto playerView = registry.view<TransformComponent, TextureComponent, PlayerStatus>();
 	for (auto [player, transform, texture, status] : playerView.each()) {
+		if (IsKeyPressed(KEY_E) && status.apples > 0) {
+			status.apples--;
+			status.hunger += APPLE_RECOVERY_AMOUNT;
+			status.hunger = Clamp(status.hunger, 0, 100);
+		}
+
 		status.isSprinting = IsKeyDown(KEY_LEFT_SHIFT);
 
 		if (status.movingDirection.x == 0 && status.movingDirection.y == 0) {
-			if(!HandleInputDirection(status.movingDirection))
-				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE));
-			else
-				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_RUNNING));
 			const auto dg = registry.ctx().get<const DungeonGrid>(DUNGEON_REG_NAME);
-			HandleMovementInDungeon(dg, transform.position, status.movingDirection);
+
+			if (HandleInputDirection(status.movingDirection) && HandleMovementInDungeon(dg, transform.position, status.movingDirection)){
+				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_RUNNING));
+				status.hunger -= status.hungerConsumePerTile;
+			}
+			else {
+				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE));
+			}
 		}
 		else {
 			ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_RUNNING));

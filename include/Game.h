@@ -6,6 +6,8 @@
 #include <map>
 #include "DungeonGenerator.h"
 
+constexpr int LEVELS = 5;
+
 class Game {
 public:
 
@@ -57,8 +59,6 @@ private:
 	enum GameState {MENU, PAUSE, RUNNING, OVER};
 	GameState currentState;
 
-
-
 	bool IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame);
 	void GameMenu();
 	void GameStart();
@@ -68,6 +68,7 @@ private:
 	void RenderMainMenu();
 	void RenderGameOver();
 	void RenderMinimap();
+	void RenderHungerBar();
 	void RenderTextureComponents();
 	void CreateDungeon(int difficulty, const std::string seed = "");
 	void ClearDungeon();
