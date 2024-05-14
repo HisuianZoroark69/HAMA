@@ -1,7 +1,7 @@
 # Haki and Miyeon adventure
 Maze exploration game, inspired from Pokemon Mystery Dungeon series.
  
-Just do your best to conquer the maze, but don't forget to eat... :sadistic_smile:
+Just do your best to conquer the maze, but don't forget to eat... 🙊
 ![ảnh](https://github.com/HisuianZoroark69/HAMA/assets/22421274/ef9188fe-05fa-490b-a1ca-e1dc4cfc7316)
 
 # Controls
