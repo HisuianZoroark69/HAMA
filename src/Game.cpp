@@ -33,10 +33,11 @@ bool Game::IsTextureOnScreen(const Camera2D& camera, const Vector2& position, co
 void Game::GameMenu() {
 	currentState = MENU;
 }
-void Game::GameStart() {
+void Game::GameStart(int character) {
 	currentState = RUNNING;
+
 	if (registry.valid(player)) registry.destroy(player);
-	player = Player::Create(registry);
+	player = Player::Create(registry, character);
 	ClearDungeon();
 	dungeonDifficulty = 1;
 	CreateDungeon(dungeonDifficulty++);
@@ -124,7 +125,19 @@ void Game::RenderMainMenu() {
 	DrawText("Haki and Miyeon\n\n\n\n\t\tadventure", 90, 120, 60, WHITE);
 	//Game start button
 	if (GuiButton({ 320 - 50,320 - 25, 100, 50}, "Start")) {
-		GameStart();
+		//GameStart();
+		currentState = CHAR_CHOOSE;
+	}
+}
+void Game::RenderCharacterChooseMenu() {
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
+	DrawText("Choose your adventurer", 50, 120, 40, WHITE);
+	//Game start button
+	if (GuiButton({ 320 - 150,320 - 25, 100, 50 }, "Haki")) {
+		GameStart(0);
+	}
+	if (GuiButton({ 320 + 50 ,320 - 25, 100, 50 }, "Miyeon")) {
+		GameStart(1);
 	}
 }
 void Game::RenderGameOver() {
@@ -133,7 +146,7 @@ void Game::RenderGameOver() {
 	DrawText("Game Over", 170, 120, 60, WHITE);
 	//Game start button
 	if (GuiButton({ 320 - 150/2,320 - 25, 150, 50 }, "Play Again")) {
-		GameStart();
+		currentState = MENU;
 	}
 }
 
@@ -231,6 +244,9 @@ void Game::render() {
 	switch (currentState) {
 	case MENU:
 		RenderMainMenu();
+		break;
+	case CHAR_CHOOSE:
+		RenderCharacterChooseMenu();
 		break;
 	case RUNNING:
 		RenderTextureComponents();

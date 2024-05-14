@@ -182,7 +182,7 @@
     <Image Include="resource\ice wall.png" />
     <Image Include="resource\Items.png" />
     <Image Include="resource\Minimap.png" />
-    <Image Include="resource\Player.png" />
+    <Image Include="resource\Haki.png" />
     <Image Include="resource\snow.png" />
     <Image Include="resource\spring wall.png" />
   </ItemGroup>

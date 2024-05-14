@@ -15,6 +15,7 @@ constexpr float BASE_HUNGER_CONSUMPTION_PER_TILE = 0.08;
 * @brief Player statuses
 */
 struct PlayerStatus {
+	int playerCharacterId = 0;
 	int HP = 0;
 	Direction movingDirection = { 0,0 };
 	bool isSprinting = false;
@@ -29,7 +30,7 @@ struct Player {
 	 * @param name Player's name
 	 * @param textureFile Player's textureFile
 	 */
-	static entt::entity Create(entt::registry& registry);
+	static entt::entity Create(entt::registry& registry, int character);
 
 	/**
 	 * @brief Remove player entity
@@ -48,8 +49,8 @@ struct Player {
 	static void Update(entt::entity& player, entt::registry& registry);
 
 private:
-	inline static const std::string TEXTURE_IDLE = "Player_Idle";
-	inline static const std::string TEXTURE_RUNNING = "Player_Running";
+	inline static const std::array<std::string, 2> TEXTURE_IDLE = { "Haki_Idle", "Miyeon_Idle"};
+	inline static const std::array<std::string, 2> TEXTURE_RUNNING = { "Haki_Running" , "Miyeon_Running"};
 
 	static void ClampMovementInTile(Vector2& transform, Vector2& movingDirection, bool isSprinting);
 	static void ChangeTexture(TextureComponent& oldTexture, TextureComponent newTexture);

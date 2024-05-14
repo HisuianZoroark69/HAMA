@@ -2,12 +2,12 @@
 #include "TextureLoader.h"
 
 
-entt::entity Player::Create(entt::registry& registry)
+entt::entity Player::Create(entt::registry& registry, int character)
 {
 	entt::entity entity = registry.create();
-	registry.emplace<PlayerStatus>(entity, 100);
+	registry.emplace<PlayerStatus>(entity, character, 100);
 	registry.emplace<TransformComponent>(entity, Vector2{ 64 , 64 }, Direction{0,0});
-	registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_IDLE));
+	registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_IDLE[character]));
 	return entity;
 }
 
@@ -158,15 +158,15 @@ void Player::HandleInput(entt::registry& registry)
 			const auto dg = registry.ctx().get<const DungeonGrid>(DUNGEON_REG_NAME);
 
 			if (HandleInputDirection(status.movingDirection) && HandleMovementInDungeon(dg, transform.position, status.movingDirection)){
-				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_RUNNING));
+				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_RUNNING[status.playerCharacterId]));
 				status.hunger -= status.hungerConsumePerTile;
 			}
 			else {
-				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE));
+				ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_IDLE[status.playerCharacterId]));
 			}
 		}
 		else {
-			ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_RUNNING));
+			ChangeTexture(texture, TextureLoader::GetTexture(TEXTURE_RUNNING[status.playerCharacterId]));
 		}
 	}
 }

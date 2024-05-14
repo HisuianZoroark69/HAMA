@@ -2,8 +2,8 @@
   "$schema": "./schema.json",
   "textures": [
     {
-      "name": "Player_Idle",
-      "file": "resource/Player.png",
+      "name": "Haki_Idle",
+      "file": "resource/Haki.png",
       "layer": "Player",
       "frames": [
         {
@@ -45,8 +45,42 @@
       ]
     },
     {
-      "name": "Player_Running",
-      "file": "resource/Player.png",
+      "name": "Haki_Running",
+      "file": "resource/Haki.png",
+      "layer": "Player",
+      "frames": [
+        {
+          "duration": 20,
+          "rect": {
+            "x": 0,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          }
+        },
+        {
+          "duration": 20,
+          "rect": {
+            "x": 64,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          }
+        },
+        {
+          "duration": 20,
+          "rect": {
+            "x": 128,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Miyeon_Idle",
+      "file": "resource/miyeon.png",
       "layer": "Player",
       "frames": [
         {
@@ -81,6 +115,40 @@
           "rect": {
             "x": 64,
             "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "Miyeon_Running",
+      "file": "resource/miyeon.png",
+      "layer": "Player",
+      "frames": [
+        {
+          "duration": 20,
+          "rect": {
+            "x": 0,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          }
+        },
+        {
+          "duration": 20,
+          "rect": {
+            "x": 64,
+            "y": 64,
+            "width": 64,
+            "height": 64
+          }
+        },
+        {
+          "duration": 20,
+          "rect": {
+            "x": 128,
+            "y": 64,
             "width": 64,
             "height": 64
           }
