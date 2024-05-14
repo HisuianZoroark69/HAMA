@@ -35,6 +35,7 @@ void Game::GameMenu() {
 }
 void Game::GameStart() {
 	currentState = RUNNING;
+	if (registry.valid(player)) registry.destroy(player);
 	player = Player::Create(registry);
 	ClearDungeon();
 	dungeonDifficulty = 1;
@@ -285,6 +286,9 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 				break;
 			case C_ROOM:
 				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_ROOM[season]));
+				break;
+			case C_STAIR:
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_STAIR));
 				break;
 			}
 		}

@@ -251,6 +251,21 @@
           }
         }
       ]
+    },
+    {
+      "name": "Dungeon_Stair",
+      "file": "resource/stair.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 64
+          }
+        }
+      ]
     }
   ]
 }
