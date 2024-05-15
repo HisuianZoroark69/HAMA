@@ -12,7 +12,6 @@ Just do your best to conquer the maze, but don't forget to eat... 🙊
 
 # Todos:
 - Add objectives
-- Add Miyeon
 - Improve GUI
 
 # How to install:
@@ -34,3 +33,6 @@ Just do your best to conquer the maze, but don't forget to eat... 🙊
 - Dungeon Generation algorithm:
   - https://donjon.bin.sh/code/dungeon/
   - https://www.tomstephensondeveloper.co.uk/post/creating-simple-procedural-dungeon-generation
+
+# Credit
+The image and textures in this game are created by Hayakawa Haki https://www.facebook.com/Hakichan0302
