@@ -156,6 +156,49 @@
       ]
     },
     {
+      "name": "Boss_Idle",
+      "file": "resource/boss.png",
+      "layer": "Dungeon",
+      "frames": [
+        {
+          "duration": 15,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 640,
+            "height": 320
+          }
+        },
+        {
+          "duration": 15,
+          "rect": {
+            "x": 0,
+            "y": 320,
+            "width": 640,
+            "height": 320
+          }
+        },
+        {
+          "duration": 15,
+          "rect": {
+            "x": 0,
+            "y": 640,
+            "width": 640,
+            "height": 320
+          }
+        },
+        {
+          "duration": 15,
+          "rect": {
+            "x": 0,
+            "y": 320,
+            "width": 640,
+            "height": 320
+          }
+        }
+      ]
+    },
+    {
       "name": "Dungeon_Wall_Winter",
       "file": "resource/ice wall.png",
       "layer": "Dungeon",

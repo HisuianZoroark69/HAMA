@@ -60,7 +60,7 @@ void Player::UpdateCameraPosition(const Vector2& position, entt::registry& regis
 	Camera2D camera = registry.ctx().get<Camera2D>();
 	Vector2 currScrPos = GetWorldToScreen2D(position, camera);
 	float scrHeight = GetScreenHeight(), scrWidth = GetScreenWidth();
-	//camera.target = transform.position;
+	//camera.target = transform.positioan;
 	if (currScrPos.x < TILE_SIZE * (CAMERA_BORDER_SIZE)) camera.target.x -= TILE_SIZE * (CAMERA_BORDER_SIZE)-currScrPos.x;
 	if (currScrPos.x > SCREEN_SIZE - TILE_SIZE * (CAMERA_BORDER_SIZE + 1)) camera.target.x += currScrPos.x - (SCREEN_SIZE - TILE_SIZE * (CAMERA_BORDER_SIZE + 1));
 	if (currScrPos.y < TILE_SIZE * (CAMERA_BORDER_SIZE)) camera.target.y -= TILE_SIZE * (CAMERA_BORDER_SIZE)-currScrPos.y;
@@ -120,20 +120,20 @@ bool Player::HandleMovementInDungeon(const DungeonGrid& dg, Vector2& position, V
 	Vector2 posCur = Vector2Scale(position, 1.f / TILE_SIZE);
 	Vector2 posAfter = { posCur.x + movingDirection.x, posCur.y - movingDirection.y };
 	if (movingDirection.x != 0 && movingDirection.y != 0) {
-		if (dg[posAfter.y][posAfter.x] == C_WALL) {
+		if (dg[posAfter.y][posAfter.x] == C_WALL || dg[posAfter.y][posAfter.x] == C_WALL_INVIS) {
 			ret = false;
 			movingDirection = Vector2Zero();
 			posAfter = posCur;
 		}
 	}
 	if (movingDirection.x != 0) {
-		if (dg[position.y / TILE_SIZE][posAfter.x] == C_WALL) {
+		if (dg[position.y / TILE_SIZE][posAfter.x] == C_WALL || dg[position.y / TILE_SIZE][posAfter.x] == C_WALL_INVIS) {
 			ret = false;
 			movingDirection.x = 0;
 		}
 	}
 	if (movingDirection.y != 0) {
-		if (dg[posAfter.y][position.x / TILE_SIZE] == C_WALL) {
+		if (dg[posAfter.y][position.x / TILE_SIZE] == C_WALL || dg[posAfter.y][position.x / TILE_SIZE] == C_WALL_INVIS) {
 			ret = false;
 			movingDirection.y = 0;
 		}

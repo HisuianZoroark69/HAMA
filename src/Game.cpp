@@ -41,9 +41,11 @@ void Game::GameStart(int character) {
 	ClearDungeon();
 	dungeonDifficulty = 1;
 	CreateDungeon(dungeonDifficulty++);
+	//CreateBossFloor();
 }
-void Game::GameEnd() {
-	currentState = OVER;
+void Game::GameEnd(bool win = false) {
+	if (win) currentState = WIN;
+	else currentState = OVER;
 }
 
 bool Game::CheckPlayerAtStair() {
@@ -66,11 +68,17 @@ void Game::handleEvents() {
 		Player::HandleInput(registry);
 		if (CheckPlayerAtStair()) {
 			if (dungeonDifficulty > LEVELS) {
-				currentState = OVER;
+				GameEnd(true);
 				return;
 			}
 			ClearDungeon();
-			CreateDungeon(dungeonDifficulty++);
+			if (dungeonDifficulty == LEVELS) {
+				CreateBossFloor();
+				dungeonDifficulty++;
+			}
+			else {
+				CreateDungeon(dungeonDifficulty++);
+			}
 		}
 		if (IsKeyPressed(KEY_M)) {
 			minimapFullscreen = !minimapFullscreen;
@@ -140,10 +148,11 @@ void Game::RenderCharacterChooseMenu() {
 		GameStart(1);
 	}
 }
-void Game::RenderGameOver() {
+void Game::RenderGameOver(bool win = false) {
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
 
-	DrawText("Game Over", 170, 120, 60, WHITE);
+	if(win) DrawText("You Win!", 182, 120, 60, WHITE);
+	else DrawText("Game Over", 170, 120, 60, WHITE);
 	//Game start button
 	if (GuiButton({ 320 - 150/2,320 - 25, 150, 50 }, "Play Again")) {
 		currentState = MENU;
@@ -256,9 +265,38 @@ void Game::render() {
 	case OVER:
 		RenderGameOver();
 		break;
+	case WIN:
+		RenderGameOver(true);
+		break;
 	}
 	
 	EndDrawing();
+}
+
+void Game::PlaceDungeonComponent(pcg32& rng, const DungeonGrid& dungeonGrid) {
+	int season = GetRandomNumber(rng, 0, 2);
+	for (float y = 0; y < dungeonGrid.size(); y++) {
+		for (float x = 0; x < dungeonGrid[y].size(); x++) {
+			auto entity = registry.create();
+			registry.emplace<TransformComponent>(entity, Vector2{ x * TILE_SIZE, y * TILE_SIZE }, Direction{ 0,0 });
+
+			switch (dungeonGrid[y][x]) {
+			case C_CORR:
+			case C_DOOR:
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_CORR[season]));
+				break;
+			case C_WALL:
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_WALL[season]));
+				break;
+			case C_ROOM:
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_ROOM[season]));
+				break;
+			case C_STAIR:
+				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_STAIR));
+				break;
+			}
+		}
+	}
 }
 
 void Game::CreateDungeon(int difficulty, const std::string seed) {
@@ -286,29 +324,8 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 	registry.ctx().emplace_as<DungeonGrid>(MINIMAP_REG_NAME, 
 		DungeonGrid(dungeonGrid.size(), std::vector<int>(dungeonGrid[0].size(), 0)
 	));
-	int season = GetRandomNumber(rng, 0, 2);
-	for (float y = 0; y < dungeonGrid.size(); y++) {
-		for (float x = 0; x < dungeonGrid[y].size(); x++) {
-			auto entity = registry.create();
-			registry.emplace<TransformComponent>(entity, Vector2{x * TILE_SIZE, y * TILE_SIZE}, Direction{0,0});
-			
-			switch (dungeonGrid[y][x]) {
-			case C_CORR:
-			case C_DOOR:
-				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_CORR[season]));
-				break;
-			case C_WALL:
-				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_WALL[season]));
-				break;
-			case C_ROOM:
-				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_ROOM[season]));
-				break;
-			case C_STAIR:
-				registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture(TEXTURE_DUNGEON_STAIR));
-				break;
-			}
-		}
-	}
+	
+	PlaceDungeonComponent(rng, dungeonGrid);
 
 	//Create items
 	std::vector<std::pair<Vector2, entt::entity>> itemList;
@@ -327,6 +344,45 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 
 	//Change player's hunger consumption rate
 	registry.get<PlayerStatus>(player).hungerConsumePerTile = BASE_HUNGER_CONSUMPTION_PER_TILE * difficulty;
+}
+
+void Game::CreateBossFloor()
+{
+	pcg32 rng(GetRandomSeed());
+	DungeonGrid dg = {
+{C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_ROOM_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_STAIR     , C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_ROOM_INVIS, C_WALL_INVIS},
+{C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS}
+	};
+	//Set player's spawn position
+	TransformComponent& transform = registry.get<TransformComponent>(player);
+	transform.position.x = 12 * TILE_SIZE;
+	transform.position.y = 7 * TILE_SIZE;
+	transform.orientation = Vector2Zero();
+	//Set camera pan
+	registry.ctx().get<Camera2D>().target.y = 0;
+
+	PlaceDungeonComponent(rng, dg);
+
+
+	registry.ctx().emplace_as<DungeonGrid>(DUNGEON_REG_NAME, dg);
+	registry.ctx().emplace_as<DungeonGrid>(MINIMAP_REG_NAME,
+		DungeonGrid(dg.size(), std::vector<int>(dg[0].size(), 0)
+	));
+	registry.ctx().emplace_as<std::vector<std::pair<Vector2, entt::entity>>>(ITEM_LIST_REG_NAME, std::vector<std::pair<Vector2, entt::entity>>());
+	registry.get<PlayerStatus>(player).hungerConsumePerTile = 0;
+
+	//Add boss render component
+	auto entity = registry.create();
+	registry.emplace<TransformComponent>(entity, Vector2{ 2 * TILE_SIZE, 3 * TILE_SIZE }, Direction{ 0,0 });
+	registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture("Boss_Idle"));
 }
 
 void Game::ClearDungeon() {

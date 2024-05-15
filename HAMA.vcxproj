@@ -175,6 +175,7 @@
     <Image Include="resource\3.png" />
     <Image Include="resource\apple.png" />
     <Image Include="resource\autumn wall.png" />
+    <Image Include="resource\boss.png" />
     <Image Include="resource\Dungeon.png" />
     <Image Include="resource\golden apple.png" />
     <Image Include="resource\grass 1.png" />
@@ -183,8 +184,10 @@
     <Image Include="resource\Items.png" />
     <Image Include="resource\Minimap.png" />
     <Image Include="resource\Haki.png" />
+    <Image Include="resource\miyeon.png" />
     <Image Include="resource\snow.png" />
     <Image Include="resource\spring wall.png" />
+    <Image Include="resource\stair.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -39,6 +39,7 @@ public:
 	 */
 	void render();
 
+
 private:
 	/**
 	 * @brief Main Entity Component System (ECS) manager
@@ -55,23 +56,25 @@ private:
 	inline static const std::array<std::string, 3> TEXTURE_DUNGEON_ROOM = { "Dungeon_Room_Spring", "Dungeon_Room_Autumn", "Dungeon_Room_Winter" };
 	inline static const std::string TEXTURE_DUNGEON_STAIR = "Dungeon_Stair";
 
-	inline static const std::map<int, Color> DUNGEON_CELL_COLOR = { {C_WALL, WHITE}, { C_ROOM, GRAY }, {C_STAIR, BLUE} };
+	inline static const std::map<int, Color> DUNGEON_CELL_COLOR = { {C_WALL, WHITE}, {C_WALL_INVIS, WHITE}, { C_ROOM, GRAY }, { C_ROOM_INVIS, GRAY }, {C_STAIR, BLUE} };
 	
-	enum GameState {MENU, CHAR_CHOOSE, RUNNING, OVER};
+	enum GameState {MENU, CHAR_CHOOSE, RUNNING, OVER, WIN};
 	GameState currentState;
 
 	bool IsTextureOnScreen(const Camera2D& camera, const Vector2& position, const Rectangle& frame);
 	void GameMenu();
 	void GameStart(int character);
-	void GameEnd();
+	void GameEnd(bool win);
 	bool CheckPlayerAtStair();
 	void UpdateMinimap();
 	void RenderMainMenu();
 	void RenderCharacterChooseMenu();
-	void RenderGameOver();
+	void RenderGameOver(bool win);
 	void RenderMinimap();
 	void RenderHungerBar();
 	void RenderTextureComponents();
+	void PlaceDungeonComponent(pcg32& rng, const DungeonGrid& dungeonGrid);
 	void CreateDungeon(int difficulty, const std::string seed = "");
+	void CreateBossFloor();
 	void ClearDungeon();
 };

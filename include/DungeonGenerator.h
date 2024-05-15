@@ -11,11 +11,12 @@ using DungeonGrid = std::vector<std::vector<int>>;
 
 const enum CELL { 
 	C_EMPTY, 
-	C_WALL, 
+	C_WALL,
+	C_WALL_INVIS,
 	C_ROOM, 
-	C_CORR, 
+	C_ROOM_INVIS,
+	C_CORR,
 	C_DOOR,
-	C_SPAWN,
 	C_STAIR
 };
 
