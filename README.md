@@ -17,7 +17,9 @@ Just do your best to conquer the maze, but don't forget to eat... 🙊
 # How to install:
 1. Clone this repo
 2. Open with Visual Studio that has VCPKG enabled
-3. Compile
+4. Compile
+
+### To prevent copyright issue, I'll not include the background music on Github
 
 # Resources:
 ## Library:
@@ -36,4 +38,5 @@ Just do your best to conquer the maze, but don't forget to eat... 🙊
   - https://www.tomstephensondeveloper.co.uk/post/creating-simple-procedural-dungeon-generation
 
 # Credit
-The image and textures in this game are created by Hayakawa Haki https://www.facebook.com/Hakichan0302
+- The image and textures in this game are created by Hayakawa Haki https://www.facebook.com/Hakichan0302
+- Background music at boss floor by Mili, from 1:47 to end, unlicensed use https://www.youtube.com/watch?v=92E0X59wzeg

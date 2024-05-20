@@ -47,9 +47,13 @@ private:
 	entt::registry registry;
 	entt::entity player;
 
+	Music bgMusic;
+
 	bool minimapFullscreen;
 	Vector2 minimapFullscreenOffset;
 	int dungeonDifficulty = 5;
+
+	inline static const std::string MUSIC_FILE = "resource/Mili - Compass [Limbus Company].mp3";
 
 	inline static const std::array<std::string, 3> TEXTURE_DUNGEON_WALL = { "Dungeon_Wall_Spring", "Dungeon_Wall_Autumn", "Dungeon_Wall_Winter"};
 	inline static const std::array<std::string, 3> TEXTURE_DUNGEON_CORR = { "Dungeon_Corr_Spring", "Dungeon_Corr_Autumn", "Dungeon_Corr_Winter" };

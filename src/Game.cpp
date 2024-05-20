@@ -16,11 +16,15 @@ Game::Game(const char* title, int width, int height) {
 	registry.ctx().emplace<Camera2D>(Camera2D{ .zoom = 1.f});
 	TextureLoader::LoadTextureFromJson("resource/textures.json");
 
+	InitAudioDevice();
+	bgMusic = LoadMusicStream(MUSIC_FILE.c_str());
+
 	currentState = MENU;
 }
 
 Game::~Game() {
 	TextureLoader::DeleteTextures();
+	UnloadMusicStream(bgMusic);
 	CloseWindow();
 }
 
@@ -44,6 +48,9 @@ void Game::GameStart(int character) {
 	dungeonDifficulty = 1;
 	CreateDungeon(dungeonDifficulty++);
 	//CreateBossFloor();
+
+	//Play music
+	//PlayMusicStream(bgMusic);
 }
 void Game::GameEnd(bool win = false) {
 	if (win) currentState = WIN;
@@ -69,6 +76,8 @@ void Game::handleEvents() {
 	case Game::RUNNING:
 		Player::HandleInput(registry);
 		if (CheckPlayerAtStair()) {
+			//Stop Music
+			StopMusicStream(bgMusic);
 			if (dungeonDifficulty > LEVELS) {
 				GameEnd(true);
 				return;
@@ -81,6 +90,8 @@ void Game::handleEvents() {
 			else {
 				CreateDungeon(dungeonDifficulty++);
 			}
+			//Start music
+			//PlayMusicStream(bgMusic);
 		}
 		if (IsKeyPressed(KEY_M)) {
 			minimapFullscreen = !minimapFullscreen;
@@ -118,6 +129,7 @@ void Game::UpdateMinimap() {
 
 void Game::update() {
 	//TraceLog(LOG_INFO, std::to_string(GetFPS()).c_str());
+	UpdateMusicStream(bgMusic);
 	switch (currentState) {
 	case RUNNING:
 		Player::Update(player, registry);
@@ -350,6 +362,9 @@ void Game::CreateDungeon(int difficulty, const std::string seed) {
 
 void Game::CreateBossFloor()
 {
+	//Play Music
+	PlayMusicStream(bgMusic);
+
 	pcg32 rng(GetRandomSeed());
 	DungeonGrid dg = {
 {C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS, C_WALL_INVIS},
