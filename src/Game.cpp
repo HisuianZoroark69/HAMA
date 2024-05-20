@@ -7,6 +7,8 @@
 #include "TextureLoader.h"
 #include "Game.h"
 
+enum CHARACTER {HAKI, MIYEON};
+
 Game::Game(const char* title, int width, int height) {
 	InitWindow(width, height, title);
 	SetTargetFPS(FPS);
@@ -142,10 +144,10 @@ void Game::RenderCharacterChooseMenu() {
 	DrawText("Choose your adventurer", 50, 120, 40, WHITE);
 	//Game start button
 	if (GuiButton({ 320 - 150,320 - 25, 100, 50 }, "Haki")) {
-		GameStart(0);
+		GameStart(HAKI);
 	}
 	if (GuiButton({ 320 + 50 ,320 - 25, 100, 50 }, "Miyeon")) {
-		GameStart(1);
+		GameStart(MIYEON);
 	}
 }
 void Game::RenderGameOver(bool win = false) {
@@ -383,6 +385,18 @@ void Game::CreateBossFloor()
 	auto entity = registry.create();
 	registry.emplace<TransformComponent>(entity, Vector2{ 2 * TILE_SIZE, 3 * TILE_SIZE }, Direction{ 0,0 });
 	registry.emplace<TextureComponent>(entity, TextureLoader::GetTexture("Boss_Idle"));
+
+	//Add haki/miyeon
+	auto rescue = registry.create();
+	registry.emplace<TransformComponent>(rescue, Vector2{ 1 * TILE_SIZE, 7 * TILE_SIZE }, Direction{ 0,0 });
+	if (registry.get<PlayerStatus>(player).playerCharacterId == MIYEON) {
+		registry.emplace<TextureComponent>(rescue, TextureLoader::GetTexture(Player::TEXTURE_IDLE[HAKI]));
+	}
+	else {
+		registry.emplace<TextureComponent>(rescue, TextureLoader::GetTexture(Player::TEXTURE_IDLE[MIYEON]));
+	}
+	//Change TextureComponent Layer for cleanup
+	registry.get<TextureComponent>(rescue).targetLayer = RenderLayer::Dungeon;
 }
 
 void Game::ClearDungeon() {

@@ -28,6 +28,7 @@ Just do your best to conquer the maze, but don't forget to eat... 🙊
 
 ## Reference documents:
 - Raylib API: https://www.raylib.com/cheatsheet/cheatsheet.html
+- Raylib Examples: https://www.raylib.com/examples.html
 - PCG Random API: https://www.pcg-random.org/using-pcg.html
 - Nlohmann's json: https://github.com/nlohmann/json
 - Dungeon Generation algorithm:

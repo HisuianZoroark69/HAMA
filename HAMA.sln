@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HAMA", "HAMA.vcxproj", "{EE91B0AE-553F-4530-8F80-D8B7430CE16A}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "HAMASetup", "..\HAMASetup\HAMASetup.vdproj", "{69C04DB2-71FF-4D18-A5DA-DBDB8B9869F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{EE91B0AE-553F-4530-8F80-D8B7430CE16A}.Release|x64.Build.0 = Release|x64
 		{EE91B0AE-553F-4530-8F80-D8B7430CE16A}.Release|x86.ActiveCfg = Release|Win32
 		{EE91B0AE-553F-4530-8F80-D8B7430CE16A}.Release|x86.Build.0 = Release|Win32
+		{69C04DB2-71FF-4D18-A5DA-DBDB8B9869F5}.Debug|x64.ActiveCfg = Debug
+		{69C04DB2-71FF-4D18-A5DA-DBDB8B9869F5}.Debug|x86.ActiveCfg = Debug
+		{69C04DB2-71FF-4D18-A5DA-DBDB8B9869F5}.Release|x64.ActiveCfg = Release
+		{69C04DB2-71FF-4D18-A5DA-DBDB8B9869F5}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

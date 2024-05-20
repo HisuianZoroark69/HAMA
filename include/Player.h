@@ -17,11 +17,13 @@ constexpr float BASE_HUNGER_CONSUMPTION_PER_TILE = 0.08;
 struct PlayerStatus {
 	int playerCharacterId = 0;
 	int HP = 0;
+
 	Direction movingDirection = { 0,0 };
-	bool isSprinting = false;
-	float hungerConsumePerTile = BASE_HUNGER_CONSUMPTION_PER_TILE;
 	float hunger = 100;
 	int apples = 0;
+	
+	float hungerConsumePerTile = BASE_HUNGER_CONSUMPTION_PER_TILE;
+	bool isSprinting = false;
 };
 struct Player {
 	/**
@@ -48,10 +50,11 @@ struct Player {
 	 */
 	static void Update(entt::entity& player, entt::registry& registry);
 
-private:
-	inline static const std::array<std::string, 2> TEXTURE_IDLE = { "Haki_Idle", "Miyeon_Idle"};
-	inline static const std::array<std::string, 2> TEXTURE_RUNNING = { "Haki_Running" , "Miyeon_Running"};
 
+	inline static const std::array<std::string, 2> TEXTURE_IDLE = { "Haki_Idle", "Miyeon_Idle" };
+	inline static const std::array<std::string, 2> TEXTURE_RUNNING = { "Haki_Running" , "Miyeon_Running" };
+
+private:
 	static void ClampMovementInTile(Vector2& transform, Vector2& movingDirection, bool isSprinting);
 	static void ChangeTexture(TextureComponent& oldTexture, TextureComponent newTexture);
 	static void UpdateCameraPosition(const Vector2& position, entt::registry& registry);
